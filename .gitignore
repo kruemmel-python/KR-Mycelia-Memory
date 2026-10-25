@@ -1,0 +1,55 @@
+# Build trees and generated CMake/Ninja state
+/KR_BUILD/
+/build/
+/out/
+/dist/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+build.ninja
+.ninja_*
+
+# Compiler and linker products
+*.obj
+*.o
+*.a
+*.lib
+*.pdb
+*.ilk
+*.exp
+*.exe
+*.dll
+
+# Release archives and local bulk snapshots
+/*.zip
+/codedump.md
+
+# User-local secrets, settings and durable memory
+*.dpapi
+*.dpapi.*
+settings.txt
+ui-settings.txt
+lmstudio.model
+credentials/
+.env
+.env.*
+
+# IDE and operating-system files
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Temporary and log files
+*.tmp
+*.temp
+*.log
+*.bak
+*.bak1
+*.bak2
+*~

@@ -1,0 +1,7 @@
+# v0.15: Originale MYCL-v1-Persistenz angebunden
+
+Im **unveränderten** Original `CC_OpenCL.c` gibt es tatsächlich `save_mycel_state()` und `load_mycel_state()`. Version 0.15 bindet diese Exporte optional an die native `GpuBridge` und validiert MYCL-v1-Dateien (Magic, Version, Dimensionen, genaue Länge) **vor** Übergabe an den ursprünglichen Loader. Der Dateipfad muss absolut sein. Speichern überschreibt keine bestehende Datei.
+
+**Wichtig:** Die MYCL-Datei ist **unverschlüsselt**. Die Originalfunktion prüft viele `fread`/`fwrite`-Rückgaben nicht. Trotz vorgeschalteter Längen-/Headerkontrolle sind untrusted Dateien und feindliche Modifikationen nicht sicher: v0.15 ist ein kontrollierter Laboradapter, **kein produktionsfreier Restore aus fremden Dateien**. Außerdem wird der Zustand des Myzels gespeichert, nicht der komplette globale SubQG-/RNG-/OpenCL-Kontext. Das originale `load_mycel_state()` lädt CPU-Daten und führt `mycel_upload_all_state()` aus. Eine exakte numerische Fortsetzung wird erst mit einem realen GPU-Gegenversuch bestätigt. Nach Restore sperrt die Bridge weitere Updates bis zu expliziter Neuinitialisierung, weil die ursprüngliche Lade-ABI keine sicheren Dimensionen zurückmeldet.
+
+**Linux-Test:** `mycelia_state_persistence_tests` nutzt die Test-DLL und prüft save/load, Überschreibschutz, manipulierte Dateilänge sowie Cache-Invalidierung. **Windows Hardwaretest:** zunächst nur die bestehenden Tests ausführen; echte Myzel-Restore-Läufe erfordern eine eigene sichere Testumgebung. Keine Änderungen an der Original-DLL oder Compiler-IDE.

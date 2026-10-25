@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KR Mycelia Memory – Windows 11 Premium Edition</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Segoe UI Variable Text"', 'Inter', 'Segoe UI', 'system-ui', 'sans-serif'],
+            mono: ['"Cascadia Code"', '"JetBrains Mono"', 'Consolas', 'monospace'],
+          },
+          colors: {
+            fluent: {
+              bg: 'var(--bg-app)',
+              card: 'var(--bg-card)',
+              cardHover: 'var(--bg-card-hover)',
+              subtle: 'var(--bg-subtle)',
+              border: 'var(--border-color)',
+              accent: 'var(--accent-color)',
+              accentHover: 'var(--accent-hover)',
+              text: 'var(--text-main)',
+              muted: 'var(--text-muted)'
+            }
+          },
+          boxShadow: {
+            'fluent-card': '0 4px 20px -2px rgba(0, 0, 0, 0.35), 0 0 0 1px var(--border-color)',
+            'fluent-popover': '0 12px 36px 0 rgba(0, 0, 0, 0.45), 0 0 0 1px var(--border-color)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Theme Definitions according to docs/PRODUKTDOKUMENTATION.md */
+    :root, [data-theme="fluent-dark"] {
+      --bg-app: #121316;
+      --bg-sidebar: #18191d;
+      --bg-card: rgba(32, 33, 39, 0.75);
+      --bg-card-hover: rgba(42, 44, 52, 0.85);
+      --bg-subtle: rgba(255, 255, 255, 0.04);
+      --border-color: rgba(255, 255, 255, 0.09);
+      --border-accent: rgba(0, 120, 212, 0.35);
+      --accent-color: #0078d4;
+      --accent-hover: #1084d8;
+      --accent-glow: rgba(0, 120, 212, 0.25);
+      --text-main: #f3f3f5;
+      --text-muted: #9ba0aa;
+      --node-glow: #0078d4;
+    }
+
+    [data-theme="ocean"] {
+      --bg-app: #0b1520;
+      --bg-sidebar: #0f1c2a;
+      --bg-card: rgba(20, 36, 52, 0.75);
+      --bg-card-hover: rgba(28, 50, 72, 0.85);
+      --bg-subtle: rgba(38, 166, 218, 0.08);
+      --border-color: rgba(38, 166, 218, 0.2);
+      --border-accent: rgba(38, 166, 218, 0.4);
+      --accent-color: #26a6da;
+      --accent-hover: #38bdf8;
+      --accent-glow: rgba(38, 166, 218, 0.3);
+      --text-main: #eff8ff;
+      --text-muted: #8cb4cd;
+      --node-glow: #38bdf8;
+    }
+
+    [data-theme="forest"] {
+      --bg-app: #0c1813;
+      --bg-sidebar: #10211a;
+      --bg-card: rgba(24, 45, 36, 0.75);
+      --bg-card-hover: rgba(32, 60, 48, 0.85);
+      --bg-subtle: rgba(74, 222, 128, 0.06);
+      --border-color: rgba(74, 222, 128, 0.18);
+      --border-accent: rgba(74, 222, 128, 0.4);
+      --accent-color: #22c55e;
+      --accent-hover: #4ade80;
+      --accent-glow: rgba(34, 197, 94, 0.25);
+      --text-main: #f0fdf4;
+      --text-muted: #86bfa0;
+      --node-glow: #4ade80;
+    }
+
+    [data-theme="aubergine"] {
+      --bg-app: #18101e;
+      --bg-sidebar: #201429;
+      --bg-card: rgba(46, 28, 58, 0.75);
+      --bg-card-hover: rgba(62, 38, 78, 0.85);
+      --bg-subtle: rgba(216, 70, 239, 0.08);
+      --border-color: rgba(216, 70, 239, 0.2);
+      --border-accent: rgba(216, 70, 239, 0.4);
+      --accent-color: #c026d3;
+      --accent-hover: #d946ef;
+      --accent-glow: rgba(192, 38, 211, 0.3);
+      --text-main: #fdf4ff;
+      --text-muted: #c4a1ce;
+      --node-glow: #e879f9;
+    }
+
+    [data-theme="elegant-dark"] {
+      --bg-app: #09090b;
+      --bg-sidebar: #111113;
+      --bg-card: rgba(24, 24, 27, 0.8);
+      --bg-card-hover: rgba(39, 39, 42, 0.9);
+      --bg-subtle: rgba(245, 158, 11, 0.06);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(245, 158, 11, 0.35);
+      --accent-color: #f59e0b;
+      --accent-hover: #fbbf24;
+      --accent-glow: rgba(245, 158, 11, 0.25);
+      --text-main: #fafafa;
+      --text-muted: #a1a1aa;
+      --node-glow: #fbbf24;
+    }
+
+    [data-theme="light"] {
+      --bg-app: #f4f5f8;
+      --bg-sidebar: #eaebf0;
+      --bg-card: rgba(255, 255, 255, 0.88);
+      --bg-card-hover: rgba(255, 255, 255, 1);
+      --bg-subtle: rgba(0, 0, 0, 0.03);
+      --border-color: rgba(0, 0, 0, 0.1);
+      --border-accent: rgba(0, 102, 204, 0.3);
+      --accent-color: #0066cc;
+      --accent-hover: #0078d4;
+      --accent-glow: rgba(0, 102, 204, 0.2);
+      --text-main: #18191c;
+      --text-muted: #5f6368;
+      --node-glow: #0066cc;
+    }
+
+    /* Custom Acrylic / Mica Backdrop Effect */
+    .mica-surface {
+      background-color: var(--bg-card);
+      backdrop-filter: blur(24px) saturate(140%);
+      -webkit-backdrop-filter: blur(24px) saturate(140%);
+      border: 1px solid var(--border-color);
+    }
+
+    .mica-sidebar {
+      background-color: var(--bg-sidebar);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      border-right: 1px solid var(--border-color);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
+    }
+
+    /* Pulse animation */
+    @keyframes subtle-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.95); }
+    }
+    .status-pulse {
+      animation: subtle-pulse 2.4s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-[var(--bg-app)] text-[var(--text-main)] font-sans h-screen w-screen overflow-hidden flex flex-col select-none antialiased transition-colors duration-300" data-theme="fluent-dark">
+
+  <!-- ==================== WINDOW TITLE BAR (Windows 11 Chrome) ==================== -->
+  <header class="h-8 bg-black/30 border-b border-[var(--border-color)] flex items-center justify-between px-3 text-xs text-[var(--text-muted)] select-none z-50">
+    <div class="flex items-center space-x-2">
+      <!-- App Icon / Mycelia Mushroom Icon -->
+      <svg class="w-4 h-4 text-[var(--accent-color)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2a9 9 0 0 0-9 9c0 2.8 1.3 5.3 3.3 7V21a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3c2-1.7 3.3-4.2 3.3-7a9 9 0 0 0-9-9z"/>
+        <path d="M12 11v11"/>
+        <path d="M9 16c1 .7 2 1 3 1s2-.3 3-1"/>
+      </svg>
+      <span class="font-medium text-[var(--text-main)] tracking-wide">KR Mycelia Memory</span>
+      <span class="text-[10px] px-1.5 py-0.5 rounded bg-[var(--bg-subtle)] border border-[var(--border-color)] text-[var(--text-muted)]">v1.1 Native C++20 DAD</span>
+    </div>
+
+    <!-- Window Controls Simulation -->
+    <div class="flex items-center space-x-3 -mr-1">
+      <span class="text-[11px] text-[var(--text-muted)] hidden md:inline">Current User: <strong class="text-[var(--text-main)] font-mono">DESKTOP\User (DPAPI)</strong></span>
+      <div class="flex items-center space-x-1 pl-3 border-l border-[var(--border-color)]">
+        <button class="w-7 h-6 hover:bg-white/10 rounded flex items-center justify-center text-xs transition">─</button>
+        <button class="w-7 h-6 hover:bg-white/10 rounded flex items-center justify-center text-xs transition">□</button>
+        <button class="w-7 h-6 hover:bg-red-500 hover:text-white rounded flex items-center justify-center text-xs transition" title="In den Windows-Tray minimieren">✕</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN WORKSPACE (Sidebar + Content) ==================== -->
+  <div class="flex flex-1 overflow-hidden relative">
+
+    <!-- ========== 1. SIDEBAR (Navigation & Branding) ========== -->
+    <aside class="w-64 mica-sidebar flex flex-col justify-between p-3.5 z-20 flex-shrink-0">
+      <div class="space-y-4">
+        <!-- Logo & Architecture Tag -->
+        <div class="px-2 py-1.5 flex items-center space-x-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--accent-color)] to-indigo-600 flex items-center justify-center shadow-lg shadow-[var(--accent-glow)] text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-sm font-bold tracking-tight text-[var(--text-main)] leading-none">KR MYCELIA</h1>
+            <p class="text-[10px] text-[var(--accent-color)] font-medium tracking-wider uppercase mt-1">Memory Edition</p>
+          </div>
+        </div>
+
+        <!-- Navigation Menu Items -->
+        <nav class="space-y-1 text-xs">
+          <div class="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-wider px-2.5 pt-2 pb-1">Zentral</div>
+
+          <button id="nav-dashboard" onclick="switchNav('dashboard')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg font-medium bg-[var(--accent-color)] text-white shadow-sm transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+            <span>Übersicht (Dashboard)</span>
+          </button>
+
+          <button id="nav-explorer" onclick="openModal('modal-explorer')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition">
+            <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <span>Memory Explorer</span>
+          </button>
+
+          <button id="nav-collections" onclick="openModal('modal-collections')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            <span>Collections</span>
+            <span class="ml-auto text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-400 font-mono">4</span>
+          </button>
+
+          <button id="nav-timeline" onclick="scrollToSection('section-activity')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>Timeline</span>
+          </button>
+
+          <button id="nav-relations" onclick="scrollToSection('section-graph')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition">
+            <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+            <span>Relationen</span>
+          </button>
+
+          <div class="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-wider px-2.5 pt-3 pb-1">KI & Agenten</div>
+
+          <button id="nav-chat" onclick="openModal('modal-chat')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition">
+            <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+            <span>Memory Chat</span>
+            <span class="ml-auto text-[9px] px-1 py-0.5 rounded bg-purple-500/20 text-purple-300 font-medium">SSE</span>
+          </button>
+
+          <button id="nav-agents" onclick="scrollToSection('section-agents')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition">
+            <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+            <span>Agenten (MCP)</span>
+            <span class="ml-auto text-[10px] px-1.5 py-0.2 rounded bg-cyan-500/10 text-cyan-400 font-mono">3</span>
+          </button>
+
+          <button id="nav-connections" onclick="openModal('modal-connections')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition">
+            <svg class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <span>KI-Verbindungen</span>
+          </button>
+
+          <div class="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-wider px-2.5 pt-3 pb-1">System & Daten</div>
+
+          <button id="nav-import" onclick="triggerFileImport()" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition">
+            <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            <span>Medien- / Datei-Import</span>
+          </button>
+
+          <button id="nav-privacy" onclick="openModal('modal-privacy')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <span>Datenschutz & Opt-in</span>
+          </button>
+
+          <button id="nav-settings" onclick="openModal('modal-settings')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-[var(--text-main)] hover:bg-[var(--bg-subtle)] transition">
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span>Einstellungen</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Footer Info Badge -->
+      <div class="p-2.5 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] text-[11px] space-y-1.5">
+        <div class="flex items-center justify-between text-[var(--text-muted)]">
+          <span>Speicher-Sicherheit:</span>
+          <span class="flex items-center text-emerald-400 font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 status-pulse"></span>
+            DPAPI Gesichert
+          </span>
+        </div>
+        <div class="text-[10px] text-[var(--text-muted)] font-mono truncate" title="%LOCALAPPDATA%\KRMyceliaNativeMemory\memory.dpapi">
+          ...\memory.dpapi (.bak1/.bak2)
+        </div>
+      </div>
+    </aside>
+
+    <!-- ========== 2. DASHBOARD BODY (Header, Top Deck, Hits & Relations, Bottom Grid) ========== -->
+    <main class="flex-1 overflow-y-auto p-4 md:p-6 space-y-5 bg-gradient-to-b from-transparent to-black/20">
+
+      <!-- ==================== KOPFLEISTE (System & Telemetrie Bar) ==================== -->
+      <div class="mica-surface rounded-2xl p-4 shadow-fluent-card flex flex-wrap items-center justify-between gap-3">
+        <!-- Left: Service Named Pipe Pill & Status -->
+        <div class="flex items-center space-x-3">
+          <div class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 status-pulse"></span>
+            <span class="font-medium">Named Pipe Verbunden:</span>
+            <span class="text-emerald-300 font-semibold truncate max-w-[220px]">\\.\pipe\KRMyceliaMemoryService-v1</span>
+          </div>
+
+          <!-- Live Telemetry Badges -->
+          <div class="hidden xl:flex items-center space-x-2 text-xs">
+            <div class="px-2.5 py-1 rounded-lg bg-[var(--bg-subtle)] border border-[var(--border-color)] flex items-center space-x-1.5">
+              <span class="text-[var(--text-muted)]">Attraktoren:</span>
+              <strong id="counter-attractors" class="text-[var(--text-main)] font-mono text-sm">85</strong>
+            </div>
+            <div class="px-2.5 py-1 rounded-lg bg-[var(--bg-subtle)] border border-[var(--border-color)] flex items-center space-x-1.5">
+              <span class="text-[var(--text-muted)]">Stabilität:</span>
+              <strong class="text-emerald-400 font-mono text-sm">94.2%</strong>
+            </div>
+            <div class="px-2.5 py-1 rounded-lg bg-[var(--bg-subtle)] border border-[var(--border-color)] flex items-center space-x-1.5">
+              <span class="text-[var(--text-muted)]">Rauschfaktor:</span>
+              <strong class="text-amber-400 font-mono text-sm">0.437</strong>
+            </div>
+            <div class="px-2.5 py-1 rounded-lg bg-[var(--bg-subtle)] border border-[var(--border-color)] flex items-center space-x-1.5">
+              <span class="text-[var(--text-muted)]">Freigegebene Ordner:</span>
+              <strong class="text-sky-400 font-mono text-sm">2</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Toggles, Theme Selector & Refresh -->
+        <div class="flex items-center space-x-3 ml-auto">
+          <!-- Opt-in Context Capture Toggle -->
+          <div class="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] text-xs">
+            <span class="text-[var(--text-muted)] font-medium">Opt-in Erfassung:</span>
+            <button id="btn-toggle-capture" onclick="toggleCapture()" class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-600 transition-colors duration-200 ease-in-out focus:outline-none">
+              <span id="capture-knob" class="translate-x-0 pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out"></span>
+            </button>
+            <span id="capture-status-text" class="font-mono text-[11px] font-semibold text-gray-400">AUS</span>
+          </div>
+
+          <!-- Windows Autostart Checkbox -->
+          <label class="flex items-center space-x-2 text-xs text-[var(--text-muted)] cursor-pointer px-2 py-1 rounded hover:bg-[var(--bg-subtle)]">
+            <input type="checkbox" checked class="rounded border-[var(--border-color)] text-[var(--accent-color)] focus:ring-0">
+            <span>Mit Windows starten</span>
+          </label>
+
+          <!-- Theme Dropdown Switcher (Docs theme parity) -->
+          <div class="relative">
+            <select id="theme-selector" onchange="changeTheme(this.value)" class="text-xs bg-[var(--bg-subtle)] border border-[var(--border-color)] rounded-xl px-2.5 py-1.5 text-[var(--text-main)] focus:outline-none focus:border-[var(--accent-color)] cursor-pointer">
+              <option value="fluent-dark">Windows Fluent Dunkel</option>
+              <option value="ocean">Ozean (Cyan/Blau)</option>
+              <option value="forest">Wald (Smaragdgrün)</option>
+              <option value="aubergine">Aubergine (Violett)</option>
+              <option value="elegant-dark">Elegant Dunkel (Bernstein)</option>
+              <option value="light">Klar Hell</option>
+            </select>
+          </div>
+
+          <!-- Refresh Button with Spinning Animation -->
+          <button id="btn-refresh" onclick="triggerRefresh()" class="p-2 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] hover:border-[var(--accent-color)] text-[var(--text-main)] transition" title="Dashboard & Dienststatus aktualisieren">
+            <svg id="refresh-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================== 3. TOP DECK (Zweigeteilte Quick-Bar) ==================== -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+        <!-- a) Manuelle Erinnerung erfassen (7 Spalten) -->
+        <div class="lg:col-span-7 mica-surface rounded-2xl p-4 shadow-fluent-card border border-[var(--border-color)] space-y-2.5">
+          <div class="flex items-center justify-between">
+            <label for="input-memory" class="text-xs font-semibold text-[var(--text-main)] flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full bg-[var(--accent-color)]"></span>
+              <span>Manuelle Erinnerung erfassen</span>
+            </label>
+            <span class="text-[11px] text-[var(--text-muted)] font-mono">Tastenkürzel: <kbd class="px-1.5 py-0.5 rounded bg-[var(--bg-subtle)] border border-[var(--border-color)]">Strg + Enter</kbd></span>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <input
+              id="input-memory"
+              type="text"
+              placeholder="Woran soll sich die DAD erinnern? (z.B. Architektur-Entscheidungen, Notizen, Fixes...)"
+              class="flex-1 bg-[var(--bg-subtle)] border border-[var(--border-color)] focus:border-[var(--accent-color)] focus:ring-1 focus:ring-[var(--accent-color)] rounded-xl px-3.5 py-2 text-xs text-[var(--text-main)] placeholder-[var(--text-muted)] outline-none transition"
+              onkeydown="if(event.ctrlKey && event.key==='Enter') saveManualMemory()"
+            >
+            <button
+              id="btn-save-memory"
+              onclick="saveManualMemory()"
+              class="px-4 py-2 rounded-xl bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-white text-xs font-medium shadow-sm flex items-center space-x-1.5 transition whitespace-nowrap active:scale-95"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+              <span>Sicher speichern</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- b) Assoziative Suche (DAD Cue Vector) (5 Spalten) -->
+        <div class="lg:col-span-5 mica-surface rounded-2xl p-4 shadow-fluent-card border border-[var(--border-color)] space-y-2.5">
+          <div class="flex items-center justify-between">
+            <label for="input-search" class="text-xs font-semibold text-[var(--text-main)] flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+              <span>Assoziative Suche (DAD Cue Vector)</span>
+            </label>
+            <span class="text-[11px] text-[var(--text-muted)]">Cos-Ähnlichkeit & Filter</span>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <div class="relative flex-1">
+              <input
+                id="input-search"
+                type="text"
+                oninput="filterMemories(this.value)"
+                placeholder="Suchbegriff oder Cue-Vektor..."
+                class="w-full bg-[var(--bg-subtle)] border border-[var(--border-color)] focus:border-[var(--accent-color)] focus:ring-1 focus:ring-[var(--accent-color)] rounded-xl pl-9 pr-3 py-2 text-xs text-[var(--text-main)] placeholder-[var(--text-muted)] outline-none transition"
+              >
+              <svg class="w-4 h-4 text-[var(--text-muted)] absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+
+            <!-- Table Filter Dropdown -->
+            <select id="filter-table" onchange="filterMemories(document.getElementById('input-search').value)" class="text-xs bg-[var(--bg-subtle)] border border-[var(--border-color)] rounded-xl px-2.5 py-2 text-[var(--text-main)] focus:outline-none focus:border-[var(--accent-color)] cursor-pointer">
+              <option value="all">Alle Tabellen</option>
+              <option value="manual_memory">manual_memory</option>
+              <option value="imported_memory">imported_memory</option>
+              <option value="agent_memory">agent_memory</option>
+              <option value="windows_context">windows_context</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==================== 4. HAUPTBEREICH (Treffer & Assoziatives Beziehungsnetzwerk) ==================== -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+        <!-- Linke Spalte (ca. 60% / 7 Cols): Assoziative Treffer & DAD-Erinnerungen -->
+        <div class="lg:col-span-7 mica-surface rounded-2xl p-4 shadow-fluent-card flex flex-col h-[420px]">
+          <div class="flex items-center justify-between pb-3 border-b border-[var(--border-color)]">
+            <div class="flex items-center space-x-2">
+              <h2 class="text-sm font-semibold text-[var(--text-main)]">Assoziative Treffer & DAD-Erinnerungen</h2>
+              <span id="results-count" class="px-2 py-0.5 rounded-full bg-[var(--bg-subtle)] border border-[var(--border-color)] text-[11px] font-mono text-[var(--text-muted)]">5 Datensätze</span>
+            </div>
+            <div class="flex items-center space-x-1.5 text-xs">
+              <button onclick="sortMemories('stability')" class="px-2 py-1 rounded bg-[var(--bg-subtle)] hover:bg-white/10 text-[var(--text-muted)] hover:text-[var(--text-main)] text-[11px] transition">Nach Stabilität</button>
+              <button onclick="sortMemories('recent')" class="px-2 py-1 rounded bg-[var(--bg-subtle)] hover:bg-white/10 text-[var(--text-muted)] hover:text-[var(--text-main)] text-[11px] transition">Zuletzt besucht</button>
+            </div>
+          </div>
+
+          <!-- Cards Scrollable Feed -->
+          <div id="memory-cards-container" class="flex-1 overflow-y-auto pt-3 space-y-2.5 pr-1">
+            <!-- Dynamically populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Rechte Spalte (ca. 40% / 5 Cols): Assoziatives Beziehungsnetzwerk (Visual Graph) -->
+        <div id="section-graph" class="lg:col-span-5 mica-surface rounded-2xl p-4 shadow-fluent-card flex flex-col h-[420px]">
+          <div class="flex items-center justify-between pb-3 border-b border-[var(--border-color)]">
+            <div class="flex items-center space-x-2">
+              <h2 class="text-sm font-semibold text-[var(--text-main)]">Assoziatives Beziehungsnetzwerk</h2>
+              <span class="px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-medium font-mono">Live DAD Graph</span>
+            </div>
+            <button onclick="recenterGraph()" class="text-[11px] text-[var(--text-muted)] hover:text-[var(--text-main)] flex items-center space-x-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+              <span>Zentrieren</span>
+            </button>
+          </div>
+
+          <!-- Interactive SVG/Canvas Graph Area -->
+          <div class="flex-1 relative mt-2 rounded-xl bg-black/25 border border-[var(--border-color)] overflow-hidden flex items-center justify-center">
+            <svg id="interactive-network-svg" class="w-full h-full cursor-crosshair">
+              <!-- Grid background pattern -->
+              <defs>
+                <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+                  <path d="M 30 0 L 0 0 0 30" fill="none" stroke="var(--border-color)" stroke-width="0.5" stroke-opacity="0.5" />
+                </pattern>
+                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="3" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)" />
+
+              <!-- Relationship lines -->
+              <g id="graph-edges" stroke="var(--border-color)" stroke-width="1.5" stroke-dasharray="3,3">
+                <line x1="160" y1="90" x2="260" y2="160" stroke="#0078d4" stroke-width="2" />
+                <line x1="260" y1="160" x2="360" y2="100" stroke="#22c55e" stroke-width="1.8" />
+                <line x1="260" y1="160" x2="220" y2="280" stroke="#f59e0b" stroke-width="2" />
+                <line x1="160" y1="90" x2="100" y2="210" stroke="#a855f7" stroke-width="1.5" />
+                <line x1="220" y1="280" x2="340" y2="270" stroke="#ec4899" stroke-width="1.5" />
+              </g>
+
+              <!-- Edge Labels -->
+              <g font-size="9" fill="var(--text-muted)" text-anchor="middle" font-family="monospace">
+                <rect x="185" y="112" width="55" height="15" rx="3" fill="#18191d" stroke="var(--border-color)" />
+                <text x="212" y="123" fill="#38bdf8">belongs_to</text>
+
+                <rect x="290" y="118" width="55" height="15" rx="3" fill="#18191d" stroke="var(--border-color)" />
+                <text x="317" y="129" fill="#4ade80">verified_by</text>
+
+                <rect x="215" y="210" width="58" height="15" rx="3" fill="#18191d" stroke="var(--border-color)" />
+                <text x="244" y="221" fill="#fbbf24">derived_from</text>
+              </g>
+
+              <!-- Network Nodes -->
+              <g id="graph-nodes" class="cursor-pointer">
+                <!-- Node 1: Collection -->
+                <g class="node-item" onclick="highlightNode('Collection: KR_BUILD', 'Ordner-Collection mit automatischer Mitgliedschaft')">
+                  <circle cx="160" cy="90" r="18" fill="#1e293b" stroke="#0078d4" stroke-width="2.5" filter="url(#glow)"/>
+                  <text x="160" y="94" font-size="10" fill="#fff" text-anchor="middle" font-weight="bold">Col</text>
+                  <text x="160" y="122" font-size="10" fill="var(--text-muted)" text-anchor="middle">KR_BUILD</text>
+                </g>
+
+                <!-- Node 2: Core Memory (Central Hub) -->
+                <g class="node-item" onclick="highlightNode('Memory: [8a4f9e]', 'Architektur-Entscheidung: C++20 DAD Mutex Engine')">
+                  <circle cx="260" cy="160" r="24" fill="#0f172a" stroke="var(--accent-color)" stroke-width="3" filter="url(#glow)"/>
+                  <text x="260" y="164" font-size="11" fill="#fff" text-anchor="middle" font-weight="bold">DAD</text>
+                  <text x="260" y="198" font-size="10" fill="var(--text-main)" text-anchor="middle" font-weight="semibold">[8a4f9e]</text>
+                </g>
+
+                <!-- Node 3: Test Verification -->
+                <g class="node-item" onclick="highlightNode('Test: mycelia_memory_chat_tests', 'Regressionstest: 48/48 PASS')">
+                  <circle cx="360" cy="100" r="16" fill="#14532d" stroke="#22c55e" stroke-width="2" filter="url(#glow)"/>
+                  <text x="360" y="104" font-size="9" fill="#fff" text-anchor="middle">Test</text>
+                  <text x="360" y="130" font-size="10" fill="var(--text-muted)" text-anchor="middle">Pass 48/48</text>
+                </g>
+
+                <!-- Node 4: Audio Source Record -->
+                <g class="node-item" onclick="highlightNode('Medium: meeting.wav', 'Media Foundation 16 kHz Mono PCM Segment')">
+                  <circle cx="220" cy="280" r="18" fill="#451a03" stroke="#f59e0b" stroke-width="2" filter="url(#glow)"/>
+                  <text x="220" y="284" font-size="10" fill="#fff" text-anchor="middle">WAV</text>
+                  <text x="220" y="312" font-size="10" fill="var(--text-muted)" text-anchor="middle">meeting.wav</text>
+                </g>
+
+                <!-- Node 5: MCP Agent Claude -->
+                <g class="node-item" onclick="highlightNode('Agent: Claude Desktop', 'MCP Client mit Scope [read, write, ai]')">
+                  <circle cx="100" cy="210" r="16" fill="#3b0764" stroke="#a855f7" stroke-width="2" filter="url(#glow)"/>
+                  <text x="100" y="214" font-size="9" fill="#fff" text-anchor="middle">MCP</text>
+                  <text x="100" y="238" font-size="10" fill="var(--text-muted)" text-anchor="middle">Claude</text>
+                </g>
+
+                <!-- Node 6: Video Frame Analysis -->
+                <g class="node-item" onclick="highlightNode('Medium: native_video.wmv', 'Frame-OCR und Szenen-Erkennung')">
+                  <circle cx="340" cy="270" r="16" fill="#831843" stroke="#ec4899" stroke-width="2" filter="url(#glow)"/>
+                  <text x="340" y="274" font-size="9" fill="#fff" text-anchor="middle">OCR</text>
+                  <text x="340" y="298" font-size="10" fill="var(--text-muted)" text-anchor="middle">Video Frame</text>
+                </g>
+              </g>
+            </svg>
+
+            <!-- Bottom Floating Node Details Banner -->
+            <div id="graph-details-banner" class="absolute bottom-2 left-2 right-2 p-2 rounded-lg bg-[var(--bg-card)]/90 backdrop-blur-md border border-[var(--border-color)] text-xs flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-[var(--accent-color)]"></span>
+                <span id="graph-info-title" class="font-medium text-[var(--text-main)]">Knoten anklicken</span>
+                <span id="graph-info-desc" class="text-[var(--text-muted)] text-[11px] truncate max-w-[280px]">Interaktive Assoziationen & Quell-Signaturen</span>
+              </div>
+              <button onclick="openModal('modal-explorer')" class="text-[10px] text-[var(--accent-color)] hover:underline whitespace-nowrap">Im Explorer öffnen →</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==================== 5. UNTERE DASHBOARD-SEKTION (3-Spalten-Grid) ==================== -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pb-4">
+
+        <!-- Spalte 1: Chronologische Aktivität (Human-readable Timeline) -->
+        <div id="section-activity" class="mica-surface rounded-2xl p-4 shadow-fluent-card flex flex-col h-[340px]">
+          <div class="flex items-center justify-between pb-2 border-b border-[var(--border-color)]">
+            <div class="flex items-center space-x-2">
+              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <h3 class="text-xs font-bold text-[var(--text-main)] uppercase tracking-wider">Chronologische Aktivität</h3>
+            </div>
+            <button onclick="openModal('modal-timeline')" class="text-[10px] text-[var(--accent-color)] hover:underline">Alle anzeigen</button>
+          </div>
+
+          <div id="timeline-list-container" class="flex-1 overflow-y-auto pt-2 space-y-2 pr-1">
+            <!-- Dynamically populated timeline items with clean human time and badges -->
+          </div>
+        </div>
+
+        <!-- Spalte 2: Angeschlossene KI-Agenten (MCP) -->
+        <div id="section-agents" class="mica-surface rounded-2xl p-4 shadow-fluent-card flex flex-col h-[340px]">
+          <div class="flex items-center justify-between pb-2 border-b border-[var(--border-color)]">
+            <div class="flex items-center space-x-2">
+              <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+              <h3 class="text-xs font-bold text-[var(--text-main)] uppercase tracking-wider">Angeschlossene KI-Agenten (MCP)</h3>
+            </div>
+            <button onclick="openModal('modal-connections')" class="text-[10px] text-[var(--accent-color)] hover:underline">+ Neuer Agent</button>
+          </div>
+
+          <div class="flex-1 overflow-y-auto pt-2 space-y-2.5 pr-1">
+            <!-- Agent 1: Claude Desktop -->
+            <div class="p-2.5 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] hover:border-purple-500/40 transition">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+                  <span class="text-xs font-semibold text-[var(--text-main)]">Claude Desktop</span>
+                </div>
+                <span class="text-[10px] text-emerald-400 font-mono">Noch 28 Tage</span>
+              </div>
+              <p class="text-[11px] text-[var(--text-muted)] font-mono mt-1 truncate">Token: sha256(7f8a9d...)</p>
+              <div class="flex items-center justify-between mt-2 pt-2 border-t border-[var(--border-color)] text-[10px]">
+                <div class="flex space-x-1">
+                  <span class="px-1.5 py-0.5 rounded bg-white/5 text-gray-300">read</span>
+                  <span class="px-1.5 py-0.5 rounded bg-white/5 text-gray-300">write</span>
+                  <span class="px-1.5 py-0.5 rounded bg-white/5 text-gray-300">ai</span>
+                </div>
+                <button onclick="showToast('Token für Claude Desktop erfolgreich rotiert!')" class="text-purple-400 hover:underline">Rotieren</button>
+              </div>
+            </div>
+
+            <!-- Agent 2: Cursor IDE -->
+            <div class="p-2.5 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] hover:border-sky-500/40 transition">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+                  <span class="text-xs font-semibold text-[var(--text-main)]">Cursor IDE</span>
+                </div>
+                <span class="text-[10px] text-emerald-400 font-mono">Noch 14 Tage</span>
+              </div>
+              <p class="text-[11px] text-[var(--text-muted)] font-mono mt-1 truncate">Token: sha256(3d1c4b...)</p>
+              <div class="flex items-center justify-between mt-2 pt-2 border-t border-[var(--border-color)] text-[10px]">
+                <div class="flex space-x-1">
+                  <span class="px-1.5 py-0.5 rounded bg-white/5 text-gray-300">read</span>
+                  <span class="px-1.5 py-0.5 rounded bg-white/5 text-gray-300">write</span>
+                  <span class="px-1.5 py-0.5 rounded bg-white/5 text-gray-300">import</span>
+                </div>
+                <button onclick="showToast('Token für Cursor IDE erfolgreich rotiert!')" class="text-sky-400 hover:underline">Rotieren</button>
+              </div>
+            </div>
+
+            <!-- Agent 3: Codex CLI -->
+            <div class="p-2.5 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] hover:border-emerald-500/40 transition">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  <span class="text-xs font-semibold text-[var(--text-main)]">Codex Assistant</span>
+                </div>
+                <span class="text-[10px] text-emerald-400 font-mono">Noch 7 Tage</span>
+              </div>
+              <p class="text-[11px] text-[var(--text-muted)] font-mono mt-1 truncate">Token: sha256(9b2e1f...)</p>
+              <div class="flex items-center justify-between mt-2 pt-2 border-t border-[var(--border-color)] text-[10px]">
+                <div class="flex space-x-1">
+                  <span class="px-1.5 py-0.5 rounded bg-white/5 text-gray-300">read</span>
+                  <span class="px-1.5 py-0.5 rounded bg-white/5 text-gray-300">ai</span>
+                </div>
+                <button onclick="showToast('Token für Codex Assistant erfolgreich rotiert!')" class="text-emerald-400 hover:underline">Rotieren</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spalte 3: Suchhistorie & DAD-Metriken -->
+        <div class="mica-surface rounded-2xl p-4 shadow-fluent-card flex flex-col h-[340px]">
+          <div class="flex items-center justify-between pb-2 border-b border-[var(--border-color)]">
+            <div class="flex items-center space-x-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+              <h3 class="text-xs font-bold text-[var(--text-main)] uppercase tracking-wider">Suchhistorie & Cues</h3>
+            </div>
+            <button onclick="exportJsonMemories()" class="text-[10px] text-[var(--accent-color)] hover:underline flex items-center space-x-1">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              <span>JSON Export</span>
+            </button>
+          </div>
+
+          <div class="flex-1 overflow-y-auto pt-2 space-y-3">
+            <div>
+              <p class="text-[11px] text-[var(--text-muted)] mb-1.5">Letzte assoziative Cues (Klick zur Live-Suche):</p>
+              <div id="search-history-chips" class="flex flex-wrap gap-1.5">
+                <!-- Dynamically populated search chips -->
+              </div>
+            </div>
+
+            <!-- DAD Engine Vital Gauges -->
+            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] space-y-2 mt-auto">
+              <div class="text-[11px] font-semibold text-[var(--text-main)]">DAD Gedächtnisspeicher-Integrität</div>
+
+              <div>
+                <div class="flex justify-between text-[10px] text-[var(--text-muted)] mb-1">
+                  <span>Speicherbelegung (Retention 50.000 max):</span>
+                  <span class="font-mono text-emerald-400">85 / 50.000 (0.17%)</span>
+                </div>
+                <div class="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-[var(--accent-color)] h-full rounded-full" style="width: 1.2%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[10px] text-[var(--text-muted)] mb-1">
+                  <span>Assoziative Resonanz:</span>
+                  <span class="font-mono text-purple-400">Qualia = +0.28</span>
+                </div>
+                <div class="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-gradient-to-r from-purple-500 to-indigo-500 h-full rounded-full" style="width: 78%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ==================== INTERACTIVE MODALS & DRAWERS ==================== -->
+
+  <!-- MODAL: Memory Chat (Streaming & Quellenzitate) -->
+  <div id="modal-chat" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="mica-surface w-full max-w-3xl rounded-2xl shadow-fluent-popover border border-[var(--border-color)] flex flex-col h-[580px] overflow-hidden">
+      <!-- Modal Header -->
+      <div class="px-5 py-3.5 border-b border-[var(--border-color)] flex items-center justify-between bg-black/20">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-semibold text-[var(--text-main)]">Memory Chat (LM Studio Loopback)</h3>
+            <p class="text-[10px] text-[var(--text-muted)]">Quellen werden als untrusted Referenzen übergeben · 127.0.0.1:1234</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-mono">Modell: Qwen2.5-7B-Instruct</span>
+          <button onclick="closeModal('modal-chat')" class="w-7 h-7 rounded-lg hover:bg-white/10 flex items-center justify-center text-sm transition">✕</button>
+        </div>
+      </div>
+
+      <!-- Chat Transcript Area -->
+      <div id="chat-transcript" class="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs">
+        <div class="flex items-start space-x-3">
+          <div class="w-7 h-7 rounded-lg bg-purple-600/30 text-purple-300 flex items-center justify-center text-xs font-bold flex-shrink-0">M</div>
+          <div class="space-y-1 max-w-[85%]">
+            <div class="p-3 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border-color)] text-[var(--text-main)] leading-relaxed">
+              Willkommen im lokalen <strong>KR Mycelia Memory Chat</strong>. Ich beziehe mein Wissen ausschließlich aus Ihren verifizierten DAD-Erinnerungen. Jede Antwort enthält überprüfbare Quell-Signaturen.
+            </div>
+            <div class="text-[10px] text-[var(--text-muted)] font-mono pl-1">System · DAD Context Engine v1.1</div>
+          </div>
+        </div>
+
+        <div class="flex items-start justify-end space-x-3">
+          <div class="space-y-1 max-w-[85%]">
+            <div class="p-3 rounded-2xl bg-[var(--accent-color)] text-white shadow-sm leading-relaxed">
+              Welche Härtungsmaßnahmen wurden für den Windows-Dienstprozess umgesetzt?
+            </div>
+            <div class="text-[10px] text-right text-[var(--text-muted)] font-mono pr-1">Vor 3 Minuten</div>
+          </div>
+          <div class="w-7 h-7 rounded-lg bg-white/20 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">U</div>
+        </div>
+
+        <div class="flex items-start space-x-3">
+          <div class="w-7 h-7 rounded-lg bg-purple-600/30 text-purple-300 flex items-center justify-center text-xs font-bold flex-shrink-0">M</div>
+          <div class="space-y-1.5 max-w-[85%]">
+            <div class="p-3 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border-color)] text-[var(--text-main)] leading-relaxed">
+              Basierend auf den gespeicherten DAD-Architekturaufzeichnungen:
+              <ul class="list-disc list-inside mt-1.5 space-y-1 text-[var(--text-muted)]">
+                <li><strong class="text-[var(--text-main)]">Named-Pipe DACL:</strong> Beschränkt auf <code class="font-mono text-sky-400">OW (Owner-Only)</code> mit SID-Prüfung.</li>
+                <li><strong class="text-[var(--text-main)]">DLL-Suchpfade:</strong> Beschränkt via <code class="font-mono text-sky-400">SetDefaultDllDirectories</code>.</li>
+                <li><strong class="text-[var(--text-main)]">Mitigations:</strong> Blockade von Remote-Images und Deaktivierung von Legacy Extension Points.</li>
+                <li><strong class="text-[var(--text-main)]">Atomarer Speicher:</strong> 2 rotierende DPAPI-Backups (<code class="font-mono text-sky-400">.bak1</code>, <code class="font-mono text-sky-400">.bak2</code>).</li>
+              </ul>
+            </div>
+            <!-- Citation Signature Pills -->
+            <div class="flex flex-wrap gap-1 pl-1">
+              <span class="text-[10px] text-[var(--text-muted)] mr-1">Belegte DAD-Quellen:</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">[8a4f9e]</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">[6d2a1b]</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input Box -->
+      <div class="p-3 border-t border-[var(--border-color)] bg-black/20 flex items-center space-x-2">
+        <input
+          id="chat-input"
+          type="text"
+          placeholder="Frage an Ihr lokales Gedächtnis stellen..."
+          class="flex-1 bg-[var(--bg-subtle)] border border-[var(--border-color)] focus:border-[var(--accent-color)] rounded-xl px-3.5 py-2.5 text-xs text-[var(--text-main)] outline-none"
+          onkeydown="if(event.key==='Enter') simulateChatSend()"
+        >
+        <button onclick="simulateChatSend()" class="px-4 py-2.5 rounded-xl bg-[var(--accent-color)] hover:bg-[var(--accent-hover)] text-white text-xs font-medium transition flex items-center space-x-1">
+          <span>Senden</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: KI-Verbindungen (MCP One-Click Config) -->
+  <div id="modal-connections" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="mica-surface w-full max-w-2xl rounded-2xl shadow-fluent-popover border border-[var(--border-color)] p-5 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--border-color)]">
+        <div>
+          <h3 class="text-sm font-semibold text-[var(--text-main)]">KI-Verbindungen & MCP-Management</h3>
+          <p class="text-xs text-[var(--text-muted)]">Verbinden Sie lokale Clients ohne manuelle Konfigurationsänderung</p>
+        </div>
+        <button onclick="closeModal('modal-connections')" class="w-7 h-7 rounded-lg hover:bg-white/10 flex items-center justify-center text-sm transition">✕</button>
+      </div>
+
+      <div class="space-y-3">
+        <!-- Client Item 1 -->
+        <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-xs">C</div>
+            <div>
+              <h4 class="text-xs font-semibold text-[var(--text-main)]">Claude Desktop</h4>
+              <p class="text-[11px] text-[var(--text-muted)] font-mono">%APPDATA%\Claude\claude_desktop_config.json</p>
+            </div>
+          </div>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400">Verbunden</span>
+        </div>
+
+        <!-- Client Item 2 -->
+        <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold text-xs">CR</div>
+            <div>
+              <h4 class="text-xs font-semibold text-[var(--text-main)]">Cursor IDE</h4>
+              <p class="text-[11px] text-[var(--text-muted)] font-mono">~/.cursor/mcp.json</p>
+            </div>
+          </div>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400">Verbunden</span>
+        </div>
+
+        <!-- Client Item 3 -->
+        <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-xs">CX</div>
+            <div>
+              <h4 class="text-xs font-semibold text-[var(--text-main)]">Codex Assistant</h4>
+              <p class="text-[11px] text-[var(--text-muted)] font-mono">~/.codex/config.toml</p>
+            </div>
+          </div>
+          <button onclick="showToast('Codex Assistant erfolgreich verknüpft')" class="text-xs px-3 py-1.5 rounded-lg bg-[var(--accent-color)] text-white hover:bg-[var(--accent-hover)] transition">
+            Verbinden
+          </button>
+        </div>
+      </div>
+
+      <div class="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs flex items-center space-x-2">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>Tokens werden pro Benutzer per Windows DPAPI geschützt und niemals im Klartext in Konfigurationsdateien abgelegt.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Datenschutz & Opt-in -->
+  <div id="modal-privacy" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="mica-surface w-full max-w-xl rounded-2xl shadow-fluent-popover border border-[var(--border-color)] p-5 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--border-color)]">
+        <div>
+          <h3 class="text-sm font-semibold text-[var(--text-main)]">Datenschutz & Freigaben</h3>
+          <p class="text-xs text-[var(--text-muted)]">Erfassung erfolgt ausschließlich opt-in für freigegebene Prozesse</p>
+        </div>
+        <button onclick="closeModal('modal-privacy')" class="w-7 h-7 rounded-lg hover:bg-white/10 flex items-center justify-center text-sm transition">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-medium mb-1 text-[var(--text-main)]">Freigegebene Anwendungen (EXE, eine pro Zeile):</label>
+          <textarea class="w-full h-28 bg-[var(--bg-subtle)] border border-[var(--border-color)] rounded-xl p-3 font-mono text-xs text-[var(--text-main)] outline-none focus:border-[var(--accent-color)]">notepad.exe
+code.exe
+devenv.exe</textarea>
+          <p class="text-[11px] text-[var(--text-muted)] mt-1">Es werden nur aktive Fenstertitel erfasst. Passwörter, Inkognito-Fenster und sensible Keywords werden automatisch verworfen.</p>
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-2">
+          <button onclick="closeModal('modal-privacy')" class="px-3.5 py-1.5 rounded-xl border border-[var(--border-color)] hover:bg-white/5 transition">Schließen</button>
+          <button onclick="showToast('Freigaben erfolgreich gespeichert!'); closeModal('modal-privacy')" class="px-4 py-1.5 rounded-xl bg-[var(--accent-color)] text-white hover:bg-[var(--accent-hover)] transition">Freigaben speichern</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Collections -->
+  <div id="modal-collections" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="mica-surface w-full max-w-xl rounded-2xl shadow-fluent-popover border border-[var(--border-color)] p-5 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--border-color)]">
+        <div>
+          <h3 class="text-sm font-semibold text-[var(--text-main)]">DAD Collections</h3>
+          <p class="text-xs text-[var(--text-muted)]">Logische Gruppierungen ohne Kopieren der Rohdaten</p>
+        </div>
+        <button onclick="closeModal('modal-collections')" class="w-7 h-7 rounded-lg hover:bg-white/10 flex items-center justify-center text-sm transition">✕</button>
+      </div>
+
+      <div class="space-y-2.5 text-xs">
+        <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] flex items-center justify-between">
+          <div>
+            <div class="font-semibold text-[var(--text-main)]">KR_BUILD (Source Folder)</div>
+            <div class="text-[10px] text-[var(--text-muted)] font-mono">Signatur: 3e8b1a... · 34 Mitglieder</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono text-[10px]">Aktiv</span>
+        </div>
+        <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] flex items-center justify-between">
+          <div>
+            <div class="font-semibold text-[var(--text-main)]">Dokumentation & Architektur</div>
+            <div class="text-[10px] text-[var(--text-muted)] font-mono">Signatur: 9f4c2d... · 18 Mitglieder</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono text-[10px]">Aktiv</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Memory Explorer -->
+  <div id="modal-explorer" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="mica-surface w-full max-w-4xl rounded-2xl shadow-fluent-popover border border-[var(--border-color)] flex flex-col h-[600px] overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-[var(--border-color)] flex items-center justify-between bg-black/20">
+        <div>
+          <h3 class="text-sm font-semibold text-[var(--text-main)]">Memory Explorer (Vollansicht)</h3>
+          <p class="text-[11px] text-[var(--text-muted)]">Erweiterte Tabellen- und Signatur-Inspektion</p>
+        </div>
+        <button onclick="closeModal('modal-explorer')" class="w-7 h-7 rounded-lg hover:bg-white/10 flex items-center justify-center text-sm transition">✕</button>
+      </div>
+      <div class="p-4 flex-1 overflow-y-auto space-y-2">
+        <p class="text-xs text-[var(--text-muted)]">Der Memory Explorer bietet vertiefte Filter nach Zeitfenster, Konfidenzwert und abgeleiteten Audio-/Videosegmenten.</p>
+        <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] font-mono text-xs text-sky-400">
+          SELECT * FROM DynamicAssociativeDatabase WHERE visits >= 1 ORDER BY stability DESC;
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Chronologische Aktivität / Timeline (Vollansicht) -->
+  <div id="modal-timeline" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="mica-surface w-full max-w-2xl rounded-2xl shadow-fluent-popover border border-[var(--border-color)] flex flex-col h-[540px] overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-[var(--border-color)] flex items-center justify-between bg-black/20">
+        <div class="flex items-center space-x-2">
+          <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <div>
+            <h3 class="text-sm font-semibold text-[var(--text-main)]">Chronologische DAD-Aktivität</h3>
+            <p class="text-[10px] text-[var(--text-muted)]">Vollständiger Audit- und Transaktionsverlauf</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-timeline')" class="w-7 h-7 rounded-lg hover:bg-white/10 flex items-center justify-center text-sm transition">✕</button>
+      </div>
+      <div id="modal-timeline-list" class="flex-1 p-4 overflow-y-auto space-y-2.5">
+        <!-- Dynamically rendered timeline items -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Einstellungen (Darstellung & System) -->
+  <div id="modal-settings" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="mica-surface w-full max-w-2xl rounded-2xl shadow-fluent-popover border border-[var(--border-color)] p-5 space-y-4">
+      <div class="px-2 pb-3 border-b border-[var(--border-color)] flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <svg class="w-4 h-4 text-[var(--accent-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <div>
+            <h3 class="text-sm font-semibold text-[var(--text-main)]">Darstellung & Design-Vorgaben</h3>
+            <p class="text-xs text-[var(--text-muted)]">Konfigurieren Sie Farbschemata, Kontraste und Speicheroptionen</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-settings')" class="w-7 h-7 rounded-lg hover:bg-white/10 flex items-center justify-center text-sm transition">✕</button>
+      </div>
+
+      <div class="space-y-3.5 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[var(--text-muted)] mb-1 font-medium">Designvorgabe:</label>
+            <select onchange="changeTheme(this.value); document.getElementById('theme-selector').value=this.value;" class="w-full bg-[var(--bg-subtle)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-xs text-[var(--text-main)] outline-none focus:border-[var(--accent-color)]">
+              <option value="fluent-dark">Windows Fluent Dunkel</option>
+              <option value="ocean">Ozean (Cyan/Blau)</option>
+              <option value="forest">Wald (Smaragdgrün)</option>
+              <option value="aubergine">Aubergine (Violett)</option>
+              <option value="elegant-dark">Elegant Dunkel (Bernstein)</option>
+              <option value="light">Klar Hell</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[var(--text-muted)] mb-1 font-medium">Schriftgröße für Bereiche:</label>
+            <select class="w-full bg-[var(--bg-subtle)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-xs text-[var(--text-main)] outline-none focus:border-[var(--accent-color)]">
+              <option value="standard">Standard (Segoe UI Variable)</option>
+              <option value="kompakt">Kompakt (High Density)</option>
+              <option value="gross">Groß (+2pt)</option>
+              <option value="sehr-gross">Sehr groß (+4pt)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] space-y-1.5 font-mono text-[11px]">
+          <div class="text-[var(--text-muted)] flex justify-between">
+            <span>Snapshot-Pfad:</span>
+            <span class="text-emerald-400">Verifiziert & Gesichert</span>
+          </div>
+          <div class="text-[var(--text-main)] truncate select-all">%LOCALAPPDATA%\KRMyceliaNativeMemory\memory.dpapi</div>
+          <div class="text-[var(--text-muted)] text-[10px]">Rotierende Snapshots: memory.dpapi.bak1, memory.dpapi.bak2</div>
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-2">
+          <button onclick="closeModal('modal-settings')" class="px-3.5 py-1.5 rounded-xl border border-[var(--border-color)] hover:bg-white/5 transition">Schließen</button>
+          <button onclick="showToast('Einstellungen gespeichert.'); closeModal('modal-settings')" class="px-4 py-1.5 rounded-xl bg-[var(--accent-color)] text-white hover:bg-[var(--accent-hover)] transition">Übernehmen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast" class="fixed bottom-5 right-5 px-4 py-2.5 rounded-xl bg-black/80 backdrop-blur-md border border-[var(--border-accent)] text-white text-xs shadow-2xl flex items-center space-x-2 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none z-50">
+    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+    <span id="toast-message">Meldung ausgeführt</span>
+  </div>
+
+  <!-- ==================== JAVASCRIPT APP LOGIC ==================== -->
+  <script>
+    // Initial DAD State Mock Data
+    let memoryData = [
+      {
+        id: "8a4f9e",
+        table: "manual_memory",
+        title: "Architektur: C++20 DAD Mutex Engine & DPAPI Snapshots",
+        content: "Serialisierung aller Schreibtransaktionen über benutzersitzungsweiten Windows-Mutex. Atomarer Austausch mit rotierenden .bak1/.bak2 Backups.",
+        stability: 98,
+        visits: 42,
+        relations: ["belongs_to: KR_BUILD", "verified_by: test_snapshot"]
+      },
+      {
+        id: "2d1c7f",
+        table: "imported_memory",
+        title: "Media Foundation: meeting.wav Audio-Transkription",
+        content: "16-kHz-Mono-PCM Dekodierung mit SAPI Offline-Transkriptor. 8 Segmente erfolgreich in der DAD indiziert.",
+        stability: 92,
+        visits: 19,
+        relations: ["derived_from: audio_pipeline", "belongs_to: Audio-Notizen"]
+      },
+      {
+        id: "4b9e2a",
+        table: "agent_memory",
+        title: "Claude Desktop: Code-Refactoring Prompt Context",
+        content: "Abruf von 4 Referenzsignaturen zur Fehlerkorrektur des SQL-Dump Importers ohne Datenverlust.",
+        stability: 88,
+        visits: 14,
+        relations: ["caused_by: compiler_error", "resolved_by: sql_fix"]
+      },
+      {
+        id: "5c8a3d",
+        table: "windows_context",
+        title: "Visual Studio: CMakeLists.txt [Build 48/48 PASS]",
+        content: "Erfolgreicher Release-Build aller 4 Executables: KR_Mycelia_Memory, Service, MCP, Import.",
+        stability: 95,
+        visits: 31,
+        relations: ["verified_by: ctest_suite"]
+      },
+      {
+        id: "7e1b9c",
+        table: "imported_memory",
+        title: "Office Open XML: Systemarchitektur.docx",
+        content: "Nativer zlib-basierter Ingest von 32 Seiten Office-Text ohne externe Decoder oder Word-Installation.",
+        stability: 91,
+        visits: 9,
+        relations: ["belongs_to: Dokumentation"]
+      }
+    ];
+
+    let timelineData = [
+      { time: "vor 2 Min.", type: "manual_memory", text: "Manuelle Erinnerung erfasst [8a4f9e]", tag: "Erfolg" },
+      { time: "vor 8 Min.", type: "agent_audit", text: "MCP Agent 'Claude' führte associative_lookup aus", tag: "read" },
+      { time: "vor 15 Min.", type: "memory_import", text: "WAV-Transkription beendet: meeting.wav (16 kHz)", tag: "SAPI" },
+      { time: "vor 42 Min.", type: "relation_create", text: "Relation verknüpft: [4b9e2a] -> resolved_by -> [sql_fix]", tag: "Graph" },
+      { time: "vor 1 Std.", type: "snapshot_save", text: "Atomarer DPAPI Snapshot rotiert (.bak1 aktualisiert)", tag: "System" }
+    ];
+
+    let searchHistory = ["C++20 Mutex", "LM Studio", "meeting.wav", "DPAPI", "OpenCL DLL Pinning"];
+    let isCapturing = false;
+
+    // Render Memory Cards in Main Area
+    function renderMemoryCards(items) {
+      const container = document.getElementById('memory-cards-container');
+      const countLabel = document.getElementById('results-count');
+      countLabel.textContent = `${items.length} Datensätze`;
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center text-center p-6 text-[var(--text-muted)]">
+            <svg class="w-8 h-8 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <p class="text-xs font-medium">Keine passenden DAD-Erinnerungen gefunden</p>
+            <p class="text-[11px] mt-1">Passen Sie den Suchfilter oder den ausgewählten Tabellenbereich an.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = items.map(item => `
+        <div class="p-3.5 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] hover:border-[var(--border-accent)] hover:bg-[var(--bg-card-hover)] transition group">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-center space-x-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-medium ${badgeColor(item.table)}">${item.table}</span>
+              <span class="text-xs font-bold text-[var(--text-main)] group-hover:text-[var(--accent-color)] transition leading-tight">${escapeHtml(item.title)}</span>
+            </div>
+            <div class="flex items-center space-x-1.5 flex-shrink-0">
+              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-black/40 text-[var(--text-muted)] border border-[var(--border-color)]">[${item.id}]</span>
+              <button onclick="deleteMemory('${item.id}')" class="text-[var(--text-muted)] hover:text-red-400 p-1 rounded hover:bg-white/5 transition" title="Erinnerung löschen">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-[var(--text-muted)] mt-1.5 line-clamp-2 leading-relaxed">${escapeHtml(item.content)}</p>
+
+          <div class="mt-2.5 pt-2 border-t border-[var(--border-color)] flex items-center justify-between text-[10px]">
+            <!-- Stability & Visits Bar -->
+            <div class="flex items-center space-x-3">
+              <div class="flex items-center space-x-1">
+                <span class="text-[var(--text-muted)]">Stabilität:</span>
+                <span class="font-mono font-semibold text-emerald-400">${item.stability}%</span>
+                <div class="w-12 bg-white/10 h-1.5 rounded-full overflow-hidden ml-1">
+                  <div class="bg-emerald-400 h-full rounded-full" style="width: ${item.stability}%"></div>
+                </div>
+              </div>
+              <div class="text-[var(--text-muted)]">
+                Besuche: <strong class="text-[var(--text-main)] font-mono">${item.visits}</strong>
+              </div>
+            </div>
+
+            <!-- Relationships Tags -->
+            <div class="flex items-center space-x-1 overflow-hidden">
+              ${item.relations.map(rel => `
+                <span class="px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 text-[9px] font-mono truncate max-w-[140px]">${escapeHtml(rel)}</span>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Badge styling helper
+    function badgeColor(table) {
+      switch(table) {
+        case 'manual_memory': return 'bg-blue-500/15 text-blue-400 border border-blue-500/30';
+        case 'imported_memory': return 'bg-amber-500/15 text-amber-400 border border-amber-500/30';
+        case 'agent_memory': return 'bg-purple-500/15 text-purple-400 border border-purple-500/30';
+        case 'windows_context': return 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30';
+        default: return 'bg-gray-500/15 text-gray-300 border border-gray-500/30';
+      }
+    }
+
+    // Render Timeline Items
+    function renderTimeline() {
+      const html = timelineData.map(item => `
+        <div class="p-2 rounded-xl bg-[var(--bg-subtle)] border border-[var(--border-color)] text-xs flex items-center justify-between">
+          <div class="flex items-center space-x-2 truncate pr-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0"></span>
+            <span class="text-[var(--text-main)] truncate text-[11px]">${escapeHtml(item.text)}</span>
+          </div>
+          <div class="flex items-center space-x-1.5 flex-shrink-0">
+            <span class="text-[9px] px-1.5 py-0.2 rounded bg-white/5 text-[var(--text-muted)] font-mono">${item.tag}</span>
+            <span class="text-[10px] text-[var(--text-muted)] font-mono">${item.time}</span>
+          </div>
+        </div>
+      `).join('');
+
+      const container = document.getElementById('timeline-list-container');
+      if (container) container.innerHTML = html;
+
+      const modalContainer = document.getElementById('modal-timeline-list');
+      if (modalContainer) modalContainer.innerHTML = html;
+    }
+
+    // Render Search History Chips
+    function renderSearchChips() {
+      const container = document.getElementById('search-history-chips');
+      container.innerHTML = searchHistory.map(term => `
+        <button onclick="applySearchTag('${escapeHtml(term)}')" class="px-2 py-1 rounded-lg bg-[var(--bg-subtle)] hover:bg-white/10 border border-[var(--border-color)] text-[11px] text-[var(--text-main)] transition flex items-center space-x-1">
+          <span># ${escapeHtml(term)}</span>
+        </button>
+      `).join('');
+    }
+
+    // Add Manual Memory Interaction
+    function saveManualMemory() {
+      const input = document.getElementById('input-memory');
+      const val = input.value.trim();
+      if (!val) {
+        showToast("Bitte geben Sie einen Erinnerungstext ein.");
+        return;
+      }
+
+      const randomHex = Math.random().toString(16).substr(2, 6);
+      const newRecord = {
+        id: randomHex,
+        table: "manual_memory",
+        title: val.length > 50 ? val.substring(0, 48) + "..." : val,
+        content: val,
+        stability: 99,
+        visits: 1,
+        relations: ["belongs_to: Dashboard_Ingest"]
+      };
+
+      memoryData.unshift(newRecord);
+      timelineData.unshift({
+        time: "gerade eben",
+        type: "manual_memory",
+        text: `Manuelle Erinnerung gespeichert [${randomHex}]`,
+        tag: "Neu"
+      });
+
+      // Update counters
+      const countEl = document.getElementById('counter-attractors');
+      countEl.textContent = parseInt(countEl.textContent) + 1;
+
+      input.value = "";
+      renderMemoryCards(memoryData);
+      renderTimeline();
+      showToast(`Erinnerung [${randomHex}] atomar in DAD & DPAPI gespeichert!`);
+    }
+
+    // Live Filter
+    function filterMemories(query) {
+      const tableFilter = document.getElementById('filter-table').value;
+      const q = query.toLowerCase();
+
+      const filtered = memoryData.filter(item => {
+        const matchesTable = tableFilter === 'all' || item.table === tableFilter;
+        const matchesQuery = !q || item.title.toLowerCase().includes(q) || item.content.toLowerCase().includes(q) || item.id.includes(q);
+        return matchesTable && matchesQuery;
+      });
+
+      renderMemoryCards(filtered);
+    }
+
+    function applySearchTag(term) {
+      const searchInput = document.getElementById('input-search');
+      searchInput.value = term;
+      filterMemories(term);
+    }
+
+    // Delete Memory Record
+    function deleteMemory(id) {
+      const index = memoryData.findIndex(item => item.id === id);
+      if (index !== -1) {
+        memoryData.splice(index, 1);
+        timelineData.unshift({
+          time: "gerade eben",
+          type: "memory_delete",
+          text: `Erinnerung [${id}] dauerhaft gelöscht`,
+          tag: "Delete"
+        });
+        renderMemoryCards(memoryData);
+        renderTimeline();
+        showToast(`Datensatz [${id}] & Relationen gelöscht.`);
+      }
+    }
+
+    // Toggle Opt-in Capture
+    function toggleCapture() {
+      isCapturing = !isCapturing;
+      const knob = document.getElementById('capture-knob');
+      const btn = document.getElementById('btn-toggle-capture');
+      const text = document.getElementById('capture-status-text');
+
+      if (isCapturing) {
+        knob.classList.add('translate-x-4');
+        knob.classList.remove('translate-x-0');
+        btn.classList.add('bg-emerald-500');
+        btn.classList.remove('bg-gray-600');
+        text.textContent = "AKTIV";
+        text.classList.remove('text-gray-400');
+        text.classList.add('text-emerald-400');
+        showToast("Opt-in Kontexterfassung aktiviert (nur freigegebene Fenstertitel).");
+      } else {
+        knob.classList.remove('translate-x-4');
+        knob.classList.add('translate-x-0');
+        btn.classList.remove('bg-emerald-500');
+        btn.classList.add('bg-gray-600');
+        text.textContent = "AUS";
+        text.classList.add('text-gray-400');
+        text.classList.remove('text-emerald-400');
+        showToast("Kontexterfassung gestoppt.");
+      }
+    }
+
+    // Theme Switcher
+    function changeTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+      showToast(`Design gewechselt zu: ${theme}`);
+    }
+
+    // Trigger Refresh Animation
+    function triggerRefresh() {
+      const icon = document.getElementById('refresh-icon');
+      icon.classList.add('animate-spin');
+      setTimeout(() => {
+        icon.classList.remove('animate-spin');
+        showToast("Dienst & DAD-Snapshot erfolgreich synchronisiert.");
+      }, 700);
+    }
+
+    // Graph Node Interactivity
+    function highlightNode(title, desc) {
+      document.getElementById('graph-info-title').textContent = title;
+      document.getElementById('graph-info-desc').textContent = desc;
+    }
+
+    function recenterGraph() {
+      highlightNode("Knoten anklicken", "Interaktive Assoziationen & Quell-Signaturen");
+      showToast("Netzwerkgraph zentriert.");
+    }
+
+    // Navigation Switcher
+    function switchNav(view) {
+      showToast(`Ansicht: ${view}`);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Modal Manager with Safe Null Checking
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.remove('hidden');
+      } else {
+        console.warn(`Modal "${id}" wurde nicht im DOM gefunden.`);
+      }
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.add('hidden');
+      }
+    }
+
+    // Chat Simulation
+    function simulateChatSend() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const transcript = document.getElementById('chat-transcript');
+      // Append User message
+      transcript.innerHTML += `
+        <div class="flex items-start justify-end space-x-3">
+          <div class="space-y-1 max-w-[85%]">
+            <div class="p-3 rounded-2xl bg-[var(--accent-color)] text-white shadow-sm leading-relaxed">${escapeHtml(text)}</div>
+            <div class="text-[10px] text-right text-[var(--text-muted)] font-mono pr-1">gerade eben</div>
+          </div>
+          <div class="w-7 h-7 rounded-lg bg-white/20 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">U</div>
+        </div>
+      `;
+      input.value = "";
+      transcript.scrollTop = transcript.scrollHeight;
+
+      // Simulate Streaming AI response with citations
+      setTimeout(() => {
+        transcript.innerHTML += `
+          <div class="flex items-start space-x-3">
+            <div class="w-7 h-7 rounded-lg bg-purple-600/30 text-purple-300 flex items-center justify-center text-xs font-bold flex-shrink-0">M</div>
+            <div class="space-y-1.5 max-w-[85%]">
+              <div class="p-3 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--border-color)] text-[var(--text-main)] leading-relaxed">
+                Antwort basierend auf Ihrem Gedächtnis: Ihre Anfrage wurde über den assoziativen DAD-Vektor mit passenden Mustern abgeglichen. Die relevanten Segmente wurden verifiziert.
+              </div>
+              <div class="flex flex-wrap gap-1 pl-1">
+                <span class="text-[10px] text-[var(--text-muted)] mr-1">Belegte DAD-Quellen:</span>
+                <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">[8a4f9e]</span>
+              </div>
+            </div>
+          </div>
+        `;
+        transcript.scrollTop = transcript.scrollHeight;
+      }, 600);
+    }
+
+    function triggerFileImport() {
+      showToast("Dateiauswahldialog geöffnet: Text, PDF, Office, Audio & Video werden nativ dekodiert.");
+    }
+
+    function exportJsonMemories() {
+      showToast("JSON-Export aller DAD-Datensätze wurde gestartet.");
+    }
+
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function sortMemories(criteria) {
+      if (criteria === 'stability') {
+        memoryData.sort((a,b) => b.stability - a.stability);
+      } else {
+        memoryData.sort((a,b) => b.visits - a.visits);
+      }
+      renderMemoryCards(memoryData);
+      showToast(`Sortiert nach: ${criteria}`);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const text = document.getElementById('toast-message');
+      text.textContent = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3200);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Initialize App on Load
+    window.onload = function() {
+      renderMemoryCards(memoryData);
+      renderTimeline();
+      renderSearchChips();
+    };
+  </script>
+</body>
+</html>

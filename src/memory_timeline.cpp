@@ -1,0 +1,4 @@
+#include "memory_timeline.hpp"
+#include <algorithm>
+namespace krmemory { namespace {std::optional<std::int64_t> stamp(const mycelia::DynamicAssociativeDatabase::ExternalRecord& r){auto p=r.data.find("timestamp");if(p==r.data.end())return{};if(auto n=std::get_if<std::int64_t>(&p->second))return *n;return{};}}
+std::vector<mycelia::DynamicAssociativeDatabase::ExternalRecord> timeline(const mycelia::DynamicAssociativeDatabase& db,std::optional<std::int64_t> from,std::optional<std::int64_t> to,std::size_t limit){std::vector<mycelia::DynamicAssociativeDatabase::ExternalRecord> out;for(auto& r:db.query_sql_like()){auto t=stamp(r);if(!t||(from&&*t<*from)||(to&&*t>*to))continue;out.push_back(r);}std::sort(out.begin(),out.end(),[](const auto&a,const auto&b){return *stamp(a)>*stamp(b);});if(out.size()>limit)out.resize(limit);return out;}}

@@ -1,0 +1,3 @@
+#include "collector_runtime.hpp"
+#include "folder_collector.hpp"
+namespace krmemory {CollectorRuntime::CollectorRuntime(MemoryStore& store,std::vector<std::filesystem::path> roots):store_(store),roots_(std::move(roots)){}void CollectorRuntime::start(){stop();for(const auto& root:roots_){auto watcher=std::make_unique<DirectoryWatcher>();watcher->start(root,[this](const auto& file){try{if(!std::filesystem::is_regular_file(file))return;store_.transaction([&](auto& db){collect_changed_file(db,file,roots_);});}catch(...){/* Collector failures are isolated; caller can surface diagnostics. */}});watchers_.push_back(std::move(watcher));}}void CollectorRuntime::stop(){for(auto& watcher:watchers_)watcher->stop();watchers_.clear();}}
