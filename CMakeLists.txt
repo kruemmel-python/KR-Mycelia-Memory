@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(KRMyceliaNative VERSION 1.0.0 LANGUAGES CXX)
+project(KRMyceliaNative VERSION 1.0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(mycelia_native STATIC src/mycelia.cpp src/sql_dump.cpp src/sql_attractors.cpp src/snapshot.cpp src/secure_snapshot.cpp src/memory_store.cpp src/memory_import.cpp src/memory_export.cpp src/memory_collections.cpp src/memory_relations.cpp src/memory_timeline.cpp src/memory_delete.cpp src/agent_audit.cpp src/memory_chat.cpp src/memory_sources.cpp src/local_ai.cpp src/sse_parser.cpp src/native_ocr.cpp src/media_metadata.cpp src/native_media_analysis.cpp src/native_speech.cpp src/connection_manager.cpp src/process_hardening.cpp src/folder_collector.cpp src/directory_watcher.cpp src/collector_runtime.cpp src/gpu_bridge.cpp src/mycel_state_persistence.cpp src/runtime_cycle.cpp src/mycelia_world.cpp src/world_checkpoint.cpp src/gpu_observation.cpp src/secure_gpu_observation.cpp src/mycl_compare.cpp src/mycel_bundle.cpp)

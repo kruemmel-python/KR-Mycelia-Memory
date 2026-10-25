@@ -377,6 +377,7 @@ KR-Mycelia-Memory/
 ├── install.ps1              transaktionale Benutzerinstallation
 ├── uninstall.ps1            Deinstallation bei erhaltenen Benutzerdaten
 ├── CHANGELOG.md              versionierte Produktänderungen
+├── LICENSE                   PolyForm Noncommercial License 1.0.0
 ├── PORT_V*.md                historische native Portierungsschritte
 └── CMakeLists.txt           Build- und Testdefinition
 ```
@@ -398,6 +399,7 @@ KR-Mycelia-Memory/
 | [GUI-Portbericht](docs/GUI_PORT_REPORT.md) | native Umsetzung des Designsystems |
 | [Enterprise-Portstatus](docs/ENTERPRISE_PORT_STATUS.md) | getrennte historische Portierungsbewertung |
 | [Changelog](CHANGELOG.md) | versionierte Produktänderungen |
+| [Lizenz](LICENSE) | verbindliche PolyForm-Noncommercial-Lizenzbedingungen |
 
 ## Bewusste Grenzen
 
@@ -423,10 +425,13 @@ persönliche Erinnerungen, Einstellungen und geschützte lokale Daten unter
 
 ## Lizenz
 
-Dieses Repository enthält derzeit keine öffentliche Lizenzdatei. Ohne eine
-ausdrücklich hinzugefügte Lizenz werden keine Nutzungs-, Änderungs- oder
-Weiterverteilungsrechte eingeräumt. Projektverantwortliche sollten vor einer
-öffentlichen Veröffentlichung eine passende `LICENSE` ergänzen.
+KR Mycelia Memory wird unter der
+[PolyForm Noncommercial License 1.0.0](LICENSE) bereitgestellt. Sie erlaubt die
+in den Lizenzbedingungen beschriebenen nichtkommerziellen Nutzungen,
+einschließlich bestimmter persönlicher, wissenschaftlicher, gemeinnütziger und
+öffentlicher Zwecke. Eine kommerzielle Nutzung wird durch diese Lizenz nicht
+gestattet. Maßgeblich ist ausschließlich der vollständige Text in
+[`LICENSE`](LICENSE).
 
 ---
 

@@ -11,6 +11,7 @@ $StartMenu = Join-Path $env:APPDATA 'Microsoft\Windows\Start Menu\Programs'
 $Link = Join-Path $StartMenu 'KR Mycelia Memory Native.lnk'
 $Programs = @('KR_Mycelia_Memory.exe','KR_Mycelia_Service.exe','KR_Mycelia_MCP.exe','KR_Mycelia_Import.exe')
 $RuntimeNames = @('zlib1.dll','libgcc_s_seh-1.dll','libwinpthread-1.dll')
+$DocumentationNames = @('LICENSE','README.md','CHANGELOG.md')
 $ToolchainBin = Join-Path (Split-Path -Parent $Root) 'KR-Compiler\KR-Compiler-Windows-x64-v4.3.1\toolchain\bin'
 $RuntimeSources = @{}
 $ManifestName = 'install-manifest.json'
@@ -31,7 +32,14 @@ foreach ($Name in $RuntimeNames) {
     }
     $RuntimeSources[$Name] = $Source
 }
-$PayloadNames = $Programs + $RuntimeNames
+$DocumentationSources = @{}
+foreach ($Name in $DocumentationNames) {
+    $Source = Join-Path $Root $Name
+    if (Test-Path -LiteralPath $Source -PathType Leaf) {
+        $DocumentationSources[$Name] = $Source
+    }
+}
+$PayloadNames = $Programs + $RuntimeNames + @($DocumentationSources.Keys)
 
 # A running installed executable cannot be replaced reliably. First request a
 # normal GUI close where possible, then stop only the four product processes.
@@ -69,6 +77,15 @@ try {
     }
     foreach ($Name in $RuntimeNames) {
         $Source = $RuntimeSources[$Name]
+        $Destination = Join-Path $Install $Name
+        Copy-Item -LiteralPath $Source -Destination $Destination -Force
+        if ((Get-FileHash -Algorithm SHA256 -LiteralPath $Source).Hash -ne
+            (Get-FileHash -Algorithm SHA256 -LiteralPath $Destination).Hash) {
+            throw "Prüfsummenfehler bei $Name"
+        }
+    }
+    foreach ($Name in $DocumentationSources.Keys) {
+        $Source = $DocumentationSources[$Name]
         $Destination = Join-Path $Install $Name
         Copy-Item -LiteralPath $Source -Destination $Destination -Force
         if ((Get-FileHash -Algorithm SHA256 -LiteralPath $Source).Hash -ne

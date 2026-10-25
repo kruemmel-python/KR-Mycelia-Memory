@@ -4,6 +4,15 @@ Alle wesentlichen Produktänderungen werden in diesem Dokument festgehalten.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.0.1] – 2026-10-25
+
+### Lizenz
+
+- Das Projekt wird unter der PolyForm Noncommercial License 1.0.0
+  bereitgestellt.
+- Installationspakete enthalten den vollständigen Lizenztext; der Installer
+  übernimmt ihn zusätzlich in das lokale Programmverzeichnis.
+
 ## [1.0.0] – 2026-10-25
 
 ### Hinzugefügt
@@ -49,3 +58,4 @@ und die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
   Pfadgrenzen für Parser und Medien.
 
 [1.0.0]: https://github.com/kruemmel-python/KR-Mycelia-Memory/releases/tag/v1.0.0
+[1.0.1]: https://github.com/kruemmel-python/KR-Mycelia-Memory/releases/tag/v1.0.1
