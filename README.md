@@ -365,6 +365,43 @@ Der vollständige Nachweis steht im [Testbericht](docs/TEST_REPORT.md). Die
 [Funktionsmatrix](docs/FEATURE_PARITY_MATRIX.md) trennt implementierte
 Produktmerkmale von bewusst begrenzten oder historischen Bereichen.
 
+## Bebilderte Testdokumentation
+
+Der dokumentierte Praxistest verfolgt einen synthetischen Gedächtniseintrag
+vom manuellen Speichern über die Wiedergewinnung bis zur quellengebundenen
+Antwort im lokalen Memory Chat. Die Abbildungen lassen sich anklicken, um sie
+in Originalgröße zu öffnen.
+
+### 1. Testüberblick und Benutzeroberfläche
+
+<p align="center">
+  <a href="docs/screenshots/testdokumentation-01-testueberblick.png">
+    <img src="docs/screenshots/testdokumentation-01-testueberblick.png"
+         alt="Testüberblick mit Testziel, Testumgebung und beschrifteter Benutzeroberfläche von KR Mycelia Memory"
+         width="900">
+  </a>
+</p>
+
+### 2. Testdurchführung
+
+<p align="center">
+  <a href="docs/screenshots/testdokumentation-02-durchfuehrung.png">
+    <img src="docs/screenshots/testdokumentation-02-durchfuehrung.png"
+         alt="Testdurchführung vom synthetischen Gedächtniseintrag bis zu den geprüften Antworten im lokalen Memory Chat"
+         width="900">
+  </a>
+</p>
+
+### 3. Testergebnisse und Fazit
+
+<p align="center">
+  <a href="docs/screenshots/testdokumentation-03-ergebnisse-fazit.png">
+    <img src="docs/screenshots/testdokumentation-03-ergebnisse-fazit.png"
+         alt="Testergebnisse mit korrekten Fakten, Berechnungen, Quellenanzeige und ausdrücklichem Verzicht auf Halluzinationen"
+         width="900">
+  </a>
+</p>
+
 ## Projektstruktur
 
 ```text
