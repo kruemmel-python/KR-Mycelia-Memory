@@ -58,7 +58,7 @@ bewusst keine erfundenen Beispieldaten.
 ## Prüfung und Installation
 
 - Windows-x64-Release-Build mit der bereitgestellten KR-Toolchain: erfolgreich.
-- Gesamte CTest-Suite: 48 von 48 Tests erfolgreich.
+- Gesamte CTest-Suite: 49 von 49 Tests erfolgreich.
 - Theme-/Persistenztest: erfolgreich.
 - Installation nach
   `%LOCALAPPDATA%\Programs\KRMyceliaMemory`: erfolgreich.

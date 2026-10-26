@@ -172,7 +172,7 @@ nicht behauptet.
 
 ## Abnahme und Supportdiagnose
 
-Der Release-Stand besteht alle 48 registrierten Tests. Die Suite umfasst die
+Der Release-Stand besteht alle 49 registrierten Tests. Die Suite umfasst die
 DAD-Engine, DPAPI/Recovery, GPU-/MYCL-Bestand, RPC und MCP, Streaming/Abbruch,
 reale OCR in vier Bildformaten, PDF-OCR, Audio, Video, DAD-Medienrelationen,
 Verbindungs-Rollback, echte Offline-SAPI-Dateitranskription, Importabbruch,

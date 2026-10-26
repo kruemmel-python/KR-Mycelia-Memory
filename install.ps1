@@ -135,4 +135,4 @@ try {
 Write-Host "Installiert und geprüft: $Install" -ForegroundColor Green
 Write-Host 'DAD-Persistenz-Selbsttest: bestanden.' -ForegroundColor Green
 Write-Host 'Installierter Dienst-/DAD-Neustarttest: bestanden.' -ForegroundColor Green
-Write-Host 'Hintergrunddienst: gestartet. Autostart und Kontexterfassung bleiben unabhängig und standardmäßig AUS.'
+Write-Host 'Hintergrunddienst: gestartet. Vorhandene Einstellungen für Autostart und Kontexterfassung wurden beibehalten.'

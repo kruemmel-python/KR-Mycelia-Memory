@@ -76,6 +76,13 @@ der freigegebene Stammordner und das abgeleitete Projekt gespeichert. Die
 Chat-Retrievalstufe gewichtet diese Provenienzfelder vor Volltexttreffern und
 bildet bei langen Inhalten ein suchbegriffszentriertes Kontextfenster.
 
+Der rekursive Abgleich enumeriert außerhalb des DAD-Mutex und übernimmt jede
+zulässige Textquelle anschließend in einer kurzen Transaktion. Zwischen den
+Transaktionen erhalten interaktive Leser und Schreiber Zugriff. Automatische
+Erfassung ruft keine Binärdecoder, OCR-, Office-, PDF-, Audio- oder
+Videoengine auf; diese Pipeline ist ausschließlich dem expliziten Import
+zugeordnet.
+
 ## Sicherheitsmodell
 
 Named-Pipe-DACL und SID-Prüfung erzwingen denselben angemeldeten Benutzer.

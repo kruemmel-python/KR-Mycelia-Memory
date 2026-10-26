@@ -365,6 +365,18 @@ Freigeben bedeutet nicht, dass jede Datei ungeprüft sofort vollständig
 gespeichert wird. Der Hintergrunddienst wendet weiterhin Größen-, Pfad-,
 Typ- und Ressourcenregeln an.
 
+Die rekursive Überwachung verarbeitet automatisch nur sichere Text-,
+Quellcode-, Skript- und Konfigurationsformate. DOCX, XLSX, PPTX, PDF, Bilder,
+Audio und Video werden **nicht** durch einen Ordnerscan analysiert. Verwenden
+Sie für solche Dateien im Memory Explorer die ausdrücklich ausgelöste Funktion
+**Importieren**. So kann ein Projektordner mit Vorschaubildern, Build-Artefakten
+oder Medien keine OCR-/Medienanalyse im Hintergrund starten.
+
+Der Bestandsabgleich arbeitet dateiweise in kurzen Transaktionen. Dashboard,
+Memory Chat und Speichern bleiben während eines großen Ordnerscans erreichbar.
+Die Dauer des vollständigen Abgleichs hängt weiterhin von Dateizahl und
+Größe der verschlüsselten DAD ab.
+
 Beim Start der Erfassung gleicht der Dienst den vorhandenen Bestand im
 Hintergrund ab. Für jede unterstützte Datei speichert er den absoluten
 Quellpfad, den freigegebenen Stammordner und das erkannte Projekt. Ist die

@@ -52,6 +52,7 @@ std::string extract_office_xml(const std::string&,std::string_view){throw std::r
 #endif
 }
 bool import_format_supported(const fs::path& input){auto ext=lower(input.extension().string());return contains_extension(text_extensions(),ext)||contains_extension(media_extensions(),ext);}
+bool collector_format_supported(const fs::path& input){auto ext=lower(input.extension().string());if(contains_extension(media_extensions(),ext))return false;return contains_extension(text_extensions(),ext)&&ext!=".pdf"&&ext!=".docx"&&ext!=".xlsx"&&ext!=".pptx";}
 std::string normalized_source_key(const fs::path& input){std::error_code error;auto path=fs::weakly_canonical(input,error);if(error)path=input.lexically_normal();auto value=path.generic_string();
 #ifdef _WIN32
     value=lower(std::move(value));

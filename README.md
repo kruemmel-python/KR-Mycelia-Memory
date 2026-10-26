@@ -138,6 +138,12 @@ Fehlt ein
 erforderlicher lokaler Speech-Recognizer oder Decoder,
 wird dies ausdrücklich gemeldet; es wird kein Ergebnis erfunden.
 
+Die rekursive Ordnerüberwachung übernimmt bewusst nur Text-, Quellcode-,
+Skript- und Konfigurationsdateien. Binäre Office-, PDF-, Bild-, Audio- und
+Videodateien werden ausschließlich durch **Importieren** verarbeitet. Dadurch
+startet ein freigegebener Projektordner keine rechenintensive oder potenziell
+instabile Medienanalyse ohne einzelne Benutzeraktion.
+
 ## Architektur
 
 ```mermaid
@@ -351,7 +357,7 @@ Datensicherungsstrategie erforderlich.
 ## Build und Tests
 
 Das CMake-Projekt registriert **48 Regressionstests**. Der dokumentierte
-Windows-x64-Release-Lauf bestand mit **48/48 Tests**. Abgedeckt sind unter
+Windows-x64-Release-Lauf bestand mit **49/49 Tests**. Abgedeckt sind unter
 anderem:
 
 - DAD, Observer, SQL-Records, Attraktoren und Snapshots;

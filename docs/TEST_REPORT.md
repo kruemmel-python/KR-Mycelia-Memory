@@ -11,7 +11,7 @@ Toolchain vollständig erzeugt. Erfolgreich gebaut wurden unter anderem:
 - `KR_Mycelia_Service.exe`
 - `KR_Mycelia_MCP.exe`
 - `KR_Mycelia_Import.exe`
-- alle 48 registrierten Testprogramme
+- alle 49 registrierten Testprogramme
 
 ## Automatische Regression
 
@@ -22,9 +22,10 @@ ctest --test-dir H:\KR-Mycelia-Memory\KR_BUILD\cmake_build `
   -C Release --output-on-failure -j 4
 ```
 
-Ergebnis: **48 von 48 Tests bestanden, 0 Fehler**. Die abschließende Prüfung
-des regulären Installer-Builds benötigte 189,11 Sekunden; ein unmittelbar
-zuvor ausgeführter isolierter Release-Prüfbuild 36,22 Sekunden. Enthalten sind
+Ergebnis: **49 von 49 Tests bestanden, 0 Fehler**. Die abschließende Prüfung
+des regulären Installer-Builds benötigte 238,32 Sekunden und lief während der
+aktive installierte Collector mehrere freigegebene Projektwurzeln abglich.
+Enthalten sind
 DAD-Kern, Observer, SQL/Attraktoren, Snapshots,
 DPAPI, GPU-Bridge, Runtime/World/MYCL, 1.000 MemoryStore-Transaktionen mit
 Recovery, Office-Import, Collections, Beziehungen, Timeline, Agenten-Audit,
@@ -45,6 +46,19 @@ kanonischer Quellpfad, Projektzuordnung `MDraft`, Aktualisierung ohne Duplikat,
 Löschung der Altquelle, Vorrang von Projekt/Datei/Pfad und ein Treffer hinter
 5.000 Zeichen in einer langen Quelle. Der Memory Chat wählt in diesem Fall
 nachweislich die aktuelle MDraft-Datei.
+
+Der neue Laufzeittest startet einen echten `CollectorRuntime`, lässt ihn
+mehrere Textquellen importieren, greift parallel auf den verschlüsselten
+MemoryStore zu, beendet und startet ihn während des Abgleichs erneut und legt
+zusätzlich eine absichtlich ungültige PNG-Datei ab. Der DAD-Zugriff blieb unter
+der Fünf-Sekunden-Grenze, das Binärmedium wurde nicht automatisch analysiert
+und Start/Stop verlief ohne Absturz.
+
+Nach der Installation wurde außerdem die reale `settings.txt` vorübergehend um
+eine eigene Testwurzel mit Markdown und ungültiger PNG-Datei erweitert und
+anschließend bytegetreu wiederhergestellt. Während beider Collector-Wechsel
+waren 12/12 DAD-Statusabfragen erfolgreich (maximal 1,66 Sekunden), die
+Dienst-PID blieb unverändert und Windows protokollierte keinen neuen Absturz.
 
 Der Theme-Test prüft zusätzlich sechs Designvorgaben, vier Schriftgrößen,
 sieben kontrastgeprüfte Bereichsfarben und die lokale Einstellungspersistenz.

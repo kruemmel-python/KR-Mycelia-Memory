@@ -4,6 +4,32 @@ Alle wesentlichen Produktänderungen werden in diesem Dokument festgehalten.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.0.3] – 2026-10-26
+
+### Behoben
+
+- Der rekursive Ordnerabgleich hält nicht mehr während des gesamten Scans eine
+  einzige DAD-Transaktion. Jede Textdatei wird in einer kurzen, begrenzt
+  wartenden Transaktion verarbeitet; GUI, Memory Chat und RPC bleiben während
+  großer Scans erreichbar.
+- Die automatische Ordnerüberwachung startet keine OCR-, Office-, PDF-, Audio-
+  oder Videoengine mehr. Ein im Praxisfall nachgewiesener nativer OCR-Absturz
+  durch eine Binärdatei im überwachten Projekt kann den Dienst daher nicht
+  mehr beenden.
+- Collector-Wechsel und Beenden sind auch während eines laufenden
+  Bestandsabgleichs abbrechbar und warten kontrolliert auf Watcher und Worker.
+- Nicht automatisch unterstützte Binärdateien werden beim Abgleich nicht
+  fälschlich als gelöschte Textquelle behandelt. Ihr bewusster Einzelimport
+  bleibt erhalten.
+
+### Sicherheit und Betrieb
+
+- Rekursive Erfassung ist auf deterministische Text-, Quellcode-, Skript- und
+  Konfigurationsformate beschränkt. Office, PDF, Bilder, Audio und Video stehen
+  weiterhin über den ausdrücklich ausgelösten Dateiimport zur Verfügung.
+- Neuer Windows-Regressionstest prüft gleichzeitigen DAD-Zugriff während des
+  Scans, sicheren Collector-Neustart und eine absichtlich ungültige PNG-Datei.
+
 ## [1.0.2] – 2026-10-26
 
 ### Behoben
@@ -92,3 +118,4 @@ und die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 [1.0.0]: https://github.com/kruemmel-python/KR-Mycelia-Memory/releases/tag/v1.0.0
 [1.0.1]: https://github.com/kruemmel-python/KR-Mycelia-Memory/releases/tag/v1.0.1
 [1.0.2]: https://github.com/kruemmel-python/KR-Mycelia-Memory/releases/tag/v1.0.2
+[1.0.3]: https://github.com/kruemmel-python/KR-Mycelia-Memory/releases/tag/v1.0.3

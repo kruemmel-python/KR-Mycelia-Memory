@@ -35,7 +35,7 @@ Referenz des auditierten Originalbestands:
 | MyceliaWorld | `mycelia_world.*`, `world_checkpoint.*` | CPU-Welt, kombinierter Welt-/DAD-Checkpoint und Wiederherstellung |
 | CC_OpenCL-Anbindung | `gpu_bridge.*`, `runtime_cycle.*` | ABI-Bridge, GPU-Pin/Observation, Runtime-Cycle und reale Probe-Schnittstelle |
 | MYCL | `mycel_state_persistence.cpp`, `mycl_compare.*`, `mycel_bundle.*` | Laden/Speichern, Neustartfortsetzung, Vergleich und gemeinsames MYCL/Welt/DAD-Bundle |
-| Native Windows-Produktintegration | Dienst, MCP, GUI, Medien- und Connection-Module | 48/48 Windows-Regressionen sowie installierte End-to-End-Abnahme |
+| Native Windows-Produktintegration | Dienst, MCP, GUI, Medien- und Connection-Module | 49/49 Windows-Regressionen sowie installierte End-to-End-Abnahme |
 
 ## Nicht als vollständig portiert ausgewiesene Enterprise-Bereiche
 
