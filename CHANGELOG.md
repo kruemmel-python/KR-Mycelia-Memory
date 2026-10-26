@@ -4,6 +4,38 @@ Alle wesentlichen Produktänderungen werden in diesem Dokument festgehalten.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.0.2] – 2026-10-26
+
+### Behoben
+
+- Überwachte Dateien werden über ihren normalisierten absoluten Quellpfad
+  aktualisiert, statt bei jeder Änderung einen weiteren konkurrierenden
+  Volltextdatensatz anzulegen.
+- Ein Hintergrundabgleich übernimmt beim Start der Erfassung den aktuellen
+  Ordnerbestand, entfernt Datensätze gelöschter Quelldateien und bereinigt
+  historische Duplikate derselben Quelle.
+- Datei, überwachter Stammordner und erkanntes Projekt werden getrennt
+  gespeichert. Containerordner wie `H:\mc_memory_test` ordnen
+  `MDraft\README.md` dadurch ausdrücklich dem Projekt `MDraft` zu.
+- Memory Chat und assoziative Suche gewichten Projekt, Dateiname und
+  Quellpfad stärker als beiläufige Erwähnungen im Inhalt. Verwaltungs-, Such-
+  und Chatverlaufsrecords verdrängen weiterhin keine Originalquellen.
+- Bei langen Dateien wird der tatsächlich zur Frage passende Textausschnitt
+  an das lokale Modell übergeben, auch wenn er erst weit hinter dem
+  Dateianfang steht.
+- Der fortgeschriebene Quelldatensatz hält die zuletzt hinzugefügte und
+  entfernte Textregion sowie den vorherigen Inhaltsprüfwert fest. Fragen nach
+  der letzten Dateiänderung sind damit aus der DAD belegbar.
+- Der Ordnerabgleich läuft abbrechbar im Hintergrund; die laufende
+  Dateiüberwachung ist sofort verfügbar und das Beenden der Erfassung wartet
+  nicht auf einen vollständigen Großordnerscan.
+
+### Erweitert
+
+- Zusätzliche Quellcode-, Skript- und Konfigurationsformate für C/C++, C#,
+  Java, Kotlin, Go, Rust, Swift, Python, JavaScript/TypeScript, CSS, SQL,
+  Shell, PowerShell, Batch, CMake, TOML, YAML und INI-artige Dateien.
+
 ## [1.0.1] – 2026-10-25
 
 ### Lizenz
@@ -59,3 +91,4 @@ und die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
 [1.0.0]: https://github.com/kruemmel-python/KR-Mycelia-Memory/releases/tag/v1.0.0
 [1.0.1]: https://github.com/kruemmel-python/KR-Mycelia-Memory/releases/tag/v1.0.1
+[1.0.2]: https://github.com/kruemmel-python/KR-Mycelia-Memory/releases/tag/v1.0.2

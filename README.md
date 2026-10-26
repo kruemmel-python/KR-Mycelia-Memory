@@ -40,6 +40,9 @@ Agentenrechte bleiben dabei ausdrücklich zustimmungspflichtig.
 - **Echte Quellenbindung:** Der Memory Chat liefert DAD-Quellsignaturen und
   bevorzugt exakte Kennwort-, Code- und Texttreffer vor assoziativen
   Ergänzungen.
+- **Aktueller Projektbestand:** Überwachte Dateien werden nach eindeutigem
+  Quellpfad aktualisiert, gelöschte Quellen beim Bestandsabgleich entfernt und
+  über Stammordner, Projekt und Datei nachvollziehbar zugeordnet.
 - **Kein RAG-Rückkopplungsfehler:** Suchhistorie, frühere Chatantworten,
   Agenten-Audit und Berechtigungsdaten verdrängen keine ursprünglichen
   Erinnerungen.
@@ -120,15 +123,19 @@ Agentenrechte bleiben dabei ausdrücklich zustimmungspflichtig.
 
 | Kategorie | Formate / Verarbeitung |
 |---|---|
-| Text und Daten | TXT, Markdown, Quellcode, JSON, CSV, XML, HTML, RTF, Logs |
+| Text und Daten | TXT, Markdown, C/C++, C#, Java, Kotlin, Go, Rust, Swift, Python, JavaScript/TypeScript, CSS, SQL, Shell/PowerShell/Batch, CMake, TOML, YAML, INI, JSON, CSV, XML, HTML, RTF und Logs |
 | Microsoft Office | DOCX, XLSX und PPTX als Office Open XML |
 | PDF | native Seitendarstellung mit `Windows.Data.Pdf` und Windows OCR |
 | Bilder | PNG, JPEG, BMP, TIFF und systemseitig unterstütztes WEBP über WIC/OCR |
 | Audio | WAV, MP3, WMA und weitere Media-Foundation-Formate; lokales SAPI-STT |
 | Video | MP4, M4A, WEBM, WMV; Szenen, pHash, Frame-OCR und Audiospur |
 
-Importe erhalten Quelle, Collection, Analysezustand und abgeleitete
-Relationen. Fehlt ein erforderlicher lokaler Speech-Recognizer oder Decoder,
+Importe erhalten Quelle, Collection, Projektzuordnung, Analysezustand und
+abgeleitete Relationen. Änderungen ersetzen den gespeicherten Stand derselben
+Quelldatei; sie erzeugen keine konkurrierenden Volltextkopien. Die zuletzt
+hinzugefügte und entfernte Textregion bleibt als Änderungsprovenienz erhalten.
+Fehlt ein
+erforderlicher lokaler Speech-Recognizer oder Decoder,
 wird dies ausdrücklich gemeldet; es wird kein Ergebnis erfunden.
 
 ## Architektur

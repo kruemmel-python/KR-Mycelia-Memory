@@ -14,14 +14,22 @@ std::string lower_ascii(std::string text) {
 }
 
 std::vector<std::string> search_terms(std::string_view text) {
+    static const std::unordered_set<std::string> stop_words{
+        "aber","alle","auch","aus","bei","bitte","das","dem","den","der","die","diese","dieser","ein","eine","einer",
+        "für","hat","ich","ist","kann","man","mit","nicht","noch","oder","prüfe","schaue","sich","sind","stellt","und",
+        "vom","von","war","was","welche","wie","wird","womit","wurde","wurden","zu","zum","zur","the","this","that",
+        "from","into","what","when","where","which","with","would","could","should","please"
+    };
+    const auto word_character=[](unsigned char value){return std::isalnum(value)||value>=128||value=='-'||value=='_';};
     std::vector<std::string> terms;
     for (std::size_t at{}; at < text.size();) {
-        while (at < text.size() && !std::isalnum(static_cast<unsigned char>(text[at])) &&
-               text[at] != '-' && text[at] != '_') ++at;
+        while (at < text.size() && !word_character(static_cast<unsigned char>(text[at]))) ++at;
         auto end = at;
-        while (end < text.size() && (std::isalnum(static_cast<unsigned char>(text[end])) ||
-               text[end] == '-' || text[end] == '_')) ++end;
-        if (end - at > 2) terms.push_back(lower_ascii(std::string(text.substr(at, end - at))));
+        while (end < text.size() && word_character(static_cast<unsigned char>(text[end]))) ++end;
+        if (end - at > 2) {
+            auto term=lower_ascii(std::string(text.substr(at,end-at)));
+            if(!stop_words.contains(term)&&std::find(terms.begin(),terms.end(),term)==terms.end())terms.push_back(std::move(term));
+        }
         at = end;
     }
     return terms;
@@ -46,25 +54,41 @@ std::string searchable_text(const mycelia::DynamicAssociativeDatabase::ExternalR
     return text;
 }
 
+std::string field_text(const mycelia::DynamicAssociativeDatabase::ExternalRecord& record,std::string_view key){auto value=record.data.find(std::string(key));return value==record.data.end()?std::string{}:lower_ascii(mycelia::sql::display(value->second));}
+bool active_source(const mycelia::DynamicAssociativeDatabase::ExternalRecord& record){auto value=record.data.find("source_active");return value==record.data.end()||mycelia::sql::display(value->second)!="False";}
+long long freshness(const mycelia::DynamicAssociativeDatabase::ExternalRecord& record){for(const auto* key:{"timestamp","updated_timestamp","source_modified_clock"}){auto value=record.data.find(key);if(value!=record.data.end())try{return std::stoll(mycelia::sql::display(value->second));}catch(...){}}return 0;}
+
 std::size_t lexical_score(const mycelia::DynamicAssociativeDatabase::ExternalRecord& record,
                           std::string_view normalized_question,
                           const std::vector<std::string>& terms) {
     const auto haystack = searchable_text(record);
+    const auto title=field_text(record,"title"),source=field_text(record,"source_path"),project=field_text(record,"project"),collection=field_text(record,"collection"),content=field_text(record,"content");
     std::size_t score{};
     if (!normalized_question.empty() && haystack.find(normalized_question) != std::string::npos)
         score += 100000 + normalized_question.size() * 100;
-    for (const auto& term : terms)
-        if (haystack.find(term) != std::string::npos) score += 100 + term.size();
+    for (const auto& term : terms) {
+        bool matched{};
+        if(title.find(term)!=std::string::npos){score+=3000+term.size()*20;matched=true;}
+        if(source.find(term)!=std::string::npos){score+=2400+term.size()*16;matched=true;}
+        if(project.find(term)!=std::string::npos){score+=2200+term.size()*14;matched=true;}
+        if(collection.find(term)!=std::string::npos){score+=1800+term.size()*12;matched=true;}
+        if(content.find(term)!=std::string::npos){score+=120+term.size();matched=true;}
+        if(!matched&&haystack.find(term)!=std::string::npos)score+=60+term.size();
+    }
     return score;
 }
 
-std::string excerpt(const mycelia::DynamicAssociativeDatabase::ExternalRecord& record) {
+std::string focused_content(std::string value,const std::vector<std::string>& terms) {
+    constexpr std::size_t maximum=8192;if(value.size()<=maximum)return value;auto lowered=lower_ascii(value);std::size_t hit=std::string::npos;for(const auto& term:terms){auto found=lowered.find(term);if(found!=std::string::npos&&(hit==std::string::npos||found<hit))hit=found;}if(hit==std::string::npos)return value.substr(0,4096)+"\n...[middle omitted]...\n"+value.substr(value.size()-3072);auto begin=hit>2048?hit-2048:0;if(begin+maximum>value.size())begin=value.size()-maximum;return (begin?"...[earlier content omitted]...\n":"")+value.substr(begin,maximum)+(begin+maximum<value.size()?"\n...[later content omitted]...":"");
+}
+
+std::string excerpt(const mycelia::DynamicAssociativeDatabase::ExternalRecord& record,const std::vector<std::string>& terms) {
     std::string text = "[SOURCE signature=" + record.signature + " table=" + record.table + "]\n";
     for (const auto& [key, value] : record.data) {
         // Authentication material is never useful answer context.
         if (key == "token_sha256") continue;
         auto rendered = mycelia::sql::display(value);
-        if (rendered.size() > 4096) rendered.resize(4096);
+        if(key=="content")rendered=focused_content(std::move(rendered),terms);else if(rendered.size()>4096)rendered.resize(4096);
         text += key + ": " + rendered + "\n";
     }
     text += "[/SOURCE]\n";
@@ -98,18 +122,19 @@ ChatContext build_chat_context(mycelia::DynamicAssociativeDatabase& db,
     };
     std::vector<Scored> lexical;
     for (auto& record : db.query_sql_like()) {
-        if (auxiliary_table(record.table)) continue;
+        if (auxiliary_table(record.table)||!active_source(record)) continue;
         const auto score = lexical_score(record, normalized_question, terms);
         if (score) lexical.push_back({score, std::move(record)});
     }
     std::stable_sort(lexical.begin(), lexical.end(), [](const auto& left, const auto& right) {
-        return left.score > right.score;
+        if(left.score!=right.score)return left.score>right.score;
+        return freshness(left.record)>freshness(right.record);
     });
 
     std::vector<mycelia::DynamicAssociativeDatabase::ExternalRecord> selected;
     std::unordered_set<std::string> seen;
     auto add_record = [&](const auto& record) {
-        if (selected.size() < limit && !auxiliary_table(record.table) &&
+        if (selected.size() < limit && !auxiliary_table(record.table) && active_source(record) &&
             seen.insert(record.signature).second) selected.push_back(record);
     };
     for (const auto& item : lexical) add_record(item.record);
@@ -153,7 +178,7 @@ ChatContext build_chat_context(mycelia::DynamicAssociativeDatabase& db,
 
     constexpr std::size_t prompt_limit = 30 * 1024;
     for (const auto& record : selected) {
-        auto source = excerpt(record);
+        auto source = excerpt(record,terms);
         if (out.prompt.size() + source.size() > prompt_limit) continue;
         out.source_signatures.push_back(record.signature);
         out.prompt += source;

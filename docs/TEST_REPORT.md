@@ -1,6 +1,6 @@
 # Testbericht – KR Mycelia Memory
 
-Stand: 25. Oktober 2026
+Stand: 26. Oktober 2026
 
 ## Release-Build
 
@@ -22,8 +22,10 @@ ctest --test-dir H:\KR-Mycelia-Memory\KR_BUILD\cmake_build `
   -C Release --output-on-failure -j 4
 ```
 
-Ergebnis: **48 von 48 Tests bestanden, 0 Fehler**. Die aktuelle abschließende
-Laufzeit betrug 39,06 Sekunden. Enthalten sind DAD-Kern, Observer, SQL/Attraktoren, Snapshots,
+Ergebnis: **48 von 48 Tests bestanden, 0 Fehler**. Die abschließende Prüfung
+des regulären Installer-Builds benötigte 189,11 Sekunden; ein unmittelbar
+zuvor ausgeführter isolierter Release-Prüfbuild 36,22 Sekunden. Enthalten sind
+DAD-Kern, Observer, SQL/Attraktoren, Snapshots,
 DPAPI, GPU-Bridge, Runtime/World/MYCL, 1.000 MemoryStore-Transaktionen mit
 Recovery, Office-Import, Collections, Beziehungen, Timeline, Agenten-Audit,
 lokaler Chatkontext, Medienmetadaten, Löschen, Export, Folder-Policy,
@@ -35,6 +37,14 @@ Szenenwechsel, Video-OCR, DAD-Mediensegmente mit
 Quellrelation und Snapshot-Restore, One-Click-Konfigurations-
 Merge/Rollback/Trennung, Windows-11-Theme/DPI-Helfer sowie aktive Windows-
 Prozessmitigierungen.
+
+Der Datei-/Chat-Regressionsfall bildet außerdem den gemeldeten
+Sammelordnerfehler nach: Eine entfernte `KALYX\README.md` erwähnt `MDraft`,
+während die aktuelle `MDraft\README.md` andere Inhalte enthält. Geprüft werden
+kanonischer Quellpfad, Projektzuordnung `MDraft`, Aktualisierung ohne Duplikat,
+Löschung der Altquelle, Vorrang von Projekt/Datei/Pfad und ein Treffer hinter
+5.000 Zeichen in einer langen Quelle. Der Memory Chat wählt in diesem Fall
+nachweislich die aktuelle MDraft-Datei.
 
 Der Theme-Test prüft zusätzlich sechs Designvorgaben, vier Schriftgrößen,
 sieben kontrastgeprüfte Bereichsfarben und die lokale Einstellungspersistenz.

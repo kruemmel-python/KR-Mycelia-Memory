@@ -97,6 +97,17 @@ int main() {
         check(found_spreadsheet, "Spreadsheet XML content missing");
         check(found_presentation, "Presentation XML content missing");
 
+        { std::ofstream output(markdown); output << "# Native memory\nUpdated source content from MDraft."; }
+        const auto updated_markdown = krmemory::import_file(database, markdown);
+        check(updated_markdown.signature == markdown_result.signature, "Source update created a duplicate memory");
+        check(krmemory::list_collection(database, "kr_mycelia_import_project").size() == 5, "Source update changed collection cardinality");
+        const auto updated_record = database.get_sql_record(updated_markdown.signature);
+        check(updated_record.has_value(), "Updated source record missing");
+        check(mycelia::sql::display(updated_record->data.at("content")).find("Updated source content") != std::string::npos, "Latest source content was not stored");
+        check(mycelia::sql::display(updated_record->data.at("source_version")) == "2", "Source version was not advanced");
+        check(mycelia::sql::display(updated_record->data.at("last_change_added")).find("Updated source content") != std::string::npos, "Added source region was not stored");
+        check(mycelia::sql::display(updated_record->data.at("last_change_removed")).find("Persist this source content") != std::string::npos, "Removed source region was not stored");
+
         mycelia::DynamicAssociativeDatabase cancelled_database;
         std::atomic_bool cancel{true};
         bool cancellation_reported{};
@@ -108,7 +119,7 @@ int main() {
         check(cancellation_reported, "Import cancellation was not reported");
         check(cancelled_database.external_record_count() == 0, "Cancelled import wrote partial DAD records");
         fs::remove_all(directory);
-        std::cout << "PASS: native text/Office imports and atomic pre-write cancellation\n";
+        std::cout << "PASS: native text/Office imports, source upsert and atomic pre-write cancellation\n";
         return 0;
     } catch (const std::exception& error) {
         std::cerr << "FAIL: " << error.what() << '\n';

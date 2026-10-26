@@ -4,6 +4,7 @@
 #include "native_ocr.hpp"
 #include "native_media_analysis.hpp"
 #include "memory_relations.hpp"
+#include "memory_delete.hpp"
 #include "context_policy.hpp"
 #include <fstream>
 #include <algorithm>
@@ -19,7 +20,25 @@
 namespace fs=std::filesystem;
 namespace krmemory { namespace {
 std::string lower(std::string s){std::transform(s.begin(),s.end(),s.begin(),[](unsigned char c){return char(std::tolower(c));});return s;}
+const std::vector<std::string>& text_extensions(){static const std::vector<std::string> value={
+    ".txt",".md",".markdown",".cpp",".cc",".cxx",".c",".h",".hh",".hpp",".hxx",".inl",
+    ".cs",".java",".kt",".kts",".go",".rs",".swift",".py",".pyi",".js",".jsx",".ts",".tsx",
+    ".css",".scss",".less",".sql",".sh",".bash",".ps1",".cmd",".bat",".cmake",".make",".mk",
+    ".toml",".yaml",".yml",".ini",".cfg",".conf",".properties",".json",".csv",".xml",".html",
+    ".htm",".log",".rtf",".docx",".xlsx",".pptx",".pdf"};return value;}
+const std::vector<std::string>& media_extensions(){static const std::vector<std::string> value={
+    ".png",".jpg",".jpeg",".bmp",".tif",".tiff",".webp",".wav",".mp3",".mp4",".m4a",".webm",".wmv",".wma"};return value;}
+bool contains_extension(const std::vector<std::string>& values,std::string_view extension){return std::find(values.begin(),values.end(),extension)!=values.end();}
 std::string collection_for(const fs::path& p){auto parent=p.parent_path().filename().string();return parent.empty()?"Imported files":parent;}
+std::pair<std::string,std::string> changed_regions(std::string_view before,std::string_view after){
+    std::size_t prefix{};while(prefix<before.size()&&prefix<after.size()&&before[prefix]==after[prefix])++prefix;
+    if(prefix==before.size()&&prefix==after.size())return {};
+    if(prefix){auto line=before.rfind('\n',prefix-1);prefix=line==std::string_view::npos?0:line+1;}
+    std::size_t suffix{};while(suffix<before.size()-prefix&&suffix<after.size()-prefix&&before[before.size()-1-suffix]==after[after.size()-1-suffix])++suffix;
+    if(suffix){auto shared=before.substr(before.size()-suffix);auto newline=shared.find('\n');suffix=newline==std::string_view::npos?0:suffix-newline-1;}
+    auto removed=std::string(before.substr(prefix,before.size()-prefix-suffix));auto added=std::string(after.substr(prefix,after.size()-prefix-suffix));
+    return {truncate_utf8(std::move(added),4096),truncate_utf8(std::move(removed),4096)};
+}
 std::string read_file(const fs::path& path){std::ifstream input(path,std::ios::binary);std::string data((std::istreambuf_iterator<char>(input)),{});if(!input&&!input.eof())throw std::runtime_error("Cannot read import source");return data;}
 #ifdef _WIN32
 std::uint16_t u16(const std::string& data,std::size_t at){if(at+2>data.size())throw std::runtime_error("truncated Office archive");return std::uint16_t((unsigned char)data[at])|(std::uint16_t((unsigned char)data[at+1])<<8);}
@@ -32,13 +51,18 @@ std::string extract_office_xml(const std::string& archive,std::string_view exten
 std::string extract_office_xml(const std::string&,std::string_view){throw std::runtime_error("Office import is available on Windows only");}
 #endif
 }
+bool import_format_supported(const fs::path& input){auto ext=lower(input.extension().string());return contains_extension(text_extensions(),ext)||contains_extension(media_extensions(),ext);}
+std::string normalized_source_key(const fs::path& input){std::error_code error;auto path=fs::weakly_canonical(input,error);if(error)path=input.lexically_normal();auto value=path.generic_string();
+#ifdef _WIN32
+    value=lower(std::move(value));
+#endif
+    return value;
+}
 ImportResult import_file(mycelia::DynamicAssociativeDatabase& db,const fs::path& input,const std::atomic_bool* cancel){
     auto cancelled=[&]{return cancel&&cancel->load();};if(cancelled())throw std::runtime_error("import_cancelled");
     auto path=fs::weakly_canonical(input);if(!fs::is_regular_file(path))throw std::invalid_argument("Import requires a regular file");
     auto ext=lower(path.extension().string());
-    static const std::vector<std::string> supported={".txt",".md",".markdown",".cpp",".c",".h",".hpp",".json",".csv",".xml",".html",".htm",".log",".rtf",".docx",".xlsx",".pptx",".pdf"};
-    static const std::vector<std::string> media={".png",".jpg",".jpeg",".bmp",".tif",".tiff",".webp",".wav",".mp3",".mp4",".m4a",".webm",".wmv",".wma"};
-    const bool is_media=std::find(media.begin(),media.end(),ext)!=media.end();if(!is_media&&std::find(supported.begin(),supported.end(),ext)==supported.end())throw std::runtime_error("Format requires an optional native decoder and is not imported");
+    const bool is_media=contains_extension(media_extensions(),ext);if(!is_media&&!contains_extension(text_extensions(),ext))throw std::runtime_error("Format requires an optional native decoder and is not imported");
     auto size=fs::file_size(path);const auto size_limit=is_media?2ull*1024*1024*1024:64ull*1024*1024;if(size>size_limit)throw std::runtime_error("Import exceeds format safety limit");
     std::string body,analysis_engine="native",analysis_status="completed";std::vector<AudioSegment> audio_segments;std::vector<VideoFrameAnalysis> video_frames;bool video_audio{};
     if(!is_media){
@@ -65,9 +89,15 @@ ImportResult import_file(mycelia::DynamicAssociativeDatabase& db,const fs::path&
             if(video_audio){auto audio=decode_audio_native(path,cancel);if(audio.cancelled||cancelled())throw std::runtime_error("import_cancelled");audio_segments=std::move(audio.segments);analysis_status+="; audio track: "+audio.transcription_status;body+="\nAudio track preprocessing: "+std::to_string(audio_segments.size())+" timed segment(s). Transcription status: "+audio.transcription_status;}
         }
     }
-    if(cancelled())throw std::runtime_error("import_cancelled");const auto collection_name=collection_for(path);mycelia::sql::Row collection_filter;collection_filter["title"]=collection_name;auto existing=db.query_sql_like("memory_collections",collection_filter,1);auto collection_signature=existing.empty()?create_collection(db,collection_name,"source_folder"):existing.front().signature;
-    mycelia::sql::Row row;row["title"]=path.filename().string();row["application"]="file_import";row["source_path"]=path.string();row["format"]=ext;row["content"]=truncate_utf8(std::move(body),16*1024*1024);row["document_section"]="full_document";row["collection"]=collection_name;row["analysis_engine"]=analysis_engine;row["analysis_status"]=analysis_status;row["timestamp"]=(std::int64_t)std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-    auto signature=db.store_sql_record("imported_memory",row);assign_to_collection(db,signature,collection_signature,"automatic_source_folder");
+    if(cancelled())throw std::runtime_error("import_cancelled");const auto collection_name=collection_for(path);mycelia::sql::Row collection_filter;collection_filter["title"]=collection_name;auto existing_collections=db.query_sql_like("memory_collections",collection_filter,1);auto collection_signature=existing_collections.empty()?create_collection(db,collection_name,"source_folder"):existing_collections.front().signature;
+    const auto source_key=normalized_source_key(path);const auto now=(std::int64_t)std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();const auto content=truncate_utf8(std::move(body),16*1024*1024);const auto content_hash=mycelia::DynamicAssociativeDatabase::sha256(content);
+    std::vector<mycelia::DynamicAssociativeDatabase::ExternalRecord> previous;for(const auto& candidate:db.query_sql_like("imported_memory")){auto key=candidate.data.find("source_key");auto source=candidate.data.find("source_path");if((key!=candidate.data.end()&&mycelia::sql::display(key->second)==source_key)||(source!=candidate.data.end()&&normalized_source_key(fs::path(mycelia::sql::display(source->second)))==source_key))previous.push_back(candidate);}
+    auto sequence=[](const auto& record){for(const auto* key:{"source_version","timestamp"}){auto value=record.data.find(key);if(value!=record.data.end())try{return std::stoll(mycelia::sql::display(value->second));}catch(...){}}return std::int64_t{};};std::stable_sort(previous.begin(),previous.end(),[&](const auto& left,const auto& right){return sequence(left)>sequence(right);});
+    if(!previous.empty()){auto hash=previous.front().data.find("content_sha256"),active=previous.front().data.find("source_active");if(hash!=previous.front().data.end()&&mycelia::sql::display(hash->second)==content_hash&&(active==previous.front().data.end()||mycelia::sql::display(active->second)=="True")){for(std::size_t index=1;index<previous.size();++index)delete_memory(db,previous[index].signature);return {previous.front().signature,collection_name,path,ext,(std::size_t)size};}}
+    std::int64_t version=1;if(!previous.empty()){auto value=previous.front().data.find("source_version");if(value!=previous.front().data.end())try{version=std::stoll(mycelia::sql::display(value->second))+1;}catch(...){version=2;}else version=2;}
+    mycelia::sql::Row row;row["title"]=path.filename().string();row["application"]="file_import";row["source_path"]=path.string();row["source_key"]=source_key;row["source_active"]=true;row["source_version"]=version;row["source_modified_clock"]=(std::int64_t)fs::last_write_time(path).time_since_epoch().count();row["content_sha256"]=content_hash;row["format"]=ext;row["content"]=content;row["document_section"]="full_document";row["collection"]=collection_name;row["analysis_engine"]=analysis_engine;row["analysis_status"]=analysis_status;row["timestamp"]=now;
+    if(previous.empty()){row["change_kind"]="initial_import";row["last_change_added"]=truncate_utf8(content,4096);row["last_change_removed"]="";}else{auto old=previous.front().data.find("content");const auto before=old==previous.front().data.end()?std::string{}:mycelia::sql::display(old->second);auto regions=changed_regions(before,content);row["change_kind"]="source_update";row["last_change_added"]=std::move(regions.first);row["last_change_removed"]=std::move(regions.second);auto old_hash=previous.front().data.find("content_sha256");row["previous_content_sha256"]=old_hash==previous.front().data.end()?mycelia::DynamicAssociativeDatabase::sha256(before):mycelia::sql::display(old_hash->second);}
+    std::string signature;if(previous.empty()){signature=db.store_sql_record("imported_memory",row);assign_to_collection(db,signature,collection_signature,"automatic_source_folder");}else{signature=previous.front().signature;for(const auto& child:db.query_sql_like("memory_media_segments")){auto source=child.data.find("source_signature");if(source!=child.data.end()&&mycelia::sql::display(source->second)==signature)delete_memory(db,child.signature);}db.update_sql_record(signature,row);for(std::size_t index=1;index<previous.size();++index)delete_memory(db,previous[index].signature);}
     for(std::size_t index{};index<audio_segments.size();++index){const auto& segment=audio_segments[index];mycelia::sql::Row item;item["title"]=path.filename().string()+" audio segment "+std::to_string(index+1);item["source_path"]=path.string();item["source_signature"]=signature;item["start_seconds"]=segment.start_seconds;item["end_seconds"]=segment.end_seconds;item["content"]=segment.transcript;item["rms"]=segment.rms;item["collection"]=collection_name;auto derived=db.store_sql_record("memory_media_segments",item);assign_to_collection(db,derived,collection_signature,"media_segment");relate(db,{derived,signature,"derived_from","native_audio_pipeline","decoded timed PCM segment",1.0});}
     for(std::size_t index{};index<video_frames.size();++index){const auto& frame=video_frames[index];mycelia::sql::Row item;item["title"]=path.filename().string()+" video frame "+std::to_string(index+1);item["source_path"]=path.string();item["source_signature"]=signature;item["timestamp_seconds"]=frame.timestamp_seconds;item["content"]=frame.recognized_text;item["scene_score"]=frame.scene_score;item["scene_change"]=frame.scene_change;item["perceptual_hash"]=std::to_string(frame.perceptual_hash);item["collection"]=collection_name;auto derived=db.store_sql_record("memory_media_segments",item);assign_to_collection(db,derived,collection_signature,"video_scene");relate(db,{derived,signature,"derived_from","native_video_pipeline","decoded timestamped scene/keyframe",1.0});}
     return {signature,collection_name,path,ext,(std::size_t)size};

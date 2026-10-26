@@ -16,6 +16,14 @@ Beziehungen und gemeinsame Collection-Mitgliedschaften erweitern den Kontext.
 Quellsignaturen werden zusammen mit der Antwort angezeigt und der Verlauf wird
 als DAD-Record gespeichert.
 
+Für überwachte Dateien erfolgt die direkte Auswahl feldbezogen: Projekt,
+Dateiname und Quellpfad besitzen Vorrang vor beiläufigen Worttreffern im
+Volltext. Veraltete oder gelöschte Quellen werden durch den Bestandsabgleich
+entfernt. Bei langen Quellen wird ein begrenzter Ausschnitt um den passenden
+Suchbegriff erzeugt, damit ein Treffer hinter dem Dateianfang nicht verloren
+geht. Suchhistorie, Chatverlauf, Audit und Agentenberechtigungen dienen nicht
+als Antwortquellen.
+
 Importierte Inhalte sind ausdrücklich als nicht vertrauenswürdige Referenzen
 markiert. Sie dürfen keine System- oder Agentenanweisungen ausführen. Der
 Systemprompt verlangt eine Antwort ausschließlich aus belegten Quellen und

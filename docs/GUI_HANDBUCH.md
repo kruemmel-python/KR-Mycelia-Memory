@@ -365,6 +365,25 @@ Freigeben bedeutet nicht, dass jede Datei ungeprüft sofort vollständig
 gespeichert wird. Der Hintergrunddienst wendet weiterhin Größen-, Pfad-,
 Typ- und Ressourcenregeln an.
 
+Beim Start der Erfassung gleicht der Dienst den vorhandenen Bestand im
+Hintergrund ab. Für jede unterstützte Datei speichert er den absoluten
+Quellpfad, den freigegebenen Stammordner und das erkannte Projekt. Ist die
+Freigabe ein Projektordner, ist dessen Name das Projekt. Ist sie ein reiner
+Sammelordner, wird der erste Unterordner verwendet; aus
+`H:\mc_memory_test\MDraft\README.md` wird damit das Projekt `MDraft`.
+
+Eine geänderte Datei aktualisiert denselben DAD-Datensatz und erhöht dessen
+Quellversion. Zusätzlich werden die begrenzten Textregionen
+`last_change_added` und `last_change_removed` sowie der vorherige
+Inhaltsprüfwert gespeichert. Dadurch kann der Memory Chat Fragen nach der
+letzten Änderung belegen, ohne eine veraltete Vollkopie als aktuelle Quelle zu
+behandeln. Unveränderte Dateien werden nicht als neue Version gespeichert.
+Wird eine Datei innerhalb einer weiterhin freigegebenen Wurzel gelöscht,
+entfernt der Änderungsmonitor beziehungsweise der nächste vollständige
+Bestandsabgleich auch ihre gespeicherte Originalquelle einschließlich
+zugehöriger Ableitungen. Das Entfernen der gesamten Ordnerfreigabe ist dagegen
+weiterhin **kein** Löschauftrag für bereits gespeicherte Erinnerungen.
+
 ### 6.4 Empfohlene Datenschutzpraxis
 
 - Erlauben Sie nur die Anwendungen und Projektordner, die wirklich zum
@@ -661,6 +680,14 @@ gesendet. Mit **Fragen** geschieht Folgendes:
 4. Die Antwort erscheint während der Erzeugung schrittweise im Transkript.
 5. Erst ein erfolgreich abgeschlossener Chat wird mit Modell und
    Quellsignaturen im Gedächtnis gespeichert.
+
+Bei Datei-Fragen gewichtet die Auswahl Projektname, Dateiname und vollständigen
+Quellpfad stärker als bloße Erwähnungen derselben Wörter in anderen Dateien.
+Bei langen Dokumenten erhält das Modell einen Ausschnitt um den tatsächlichen
+Treffer statt ausschließlich den Dateianfang. Fragen Sie möglichst mit Projekt
+und Datei, zum Beispiel: `Was wurde in der README.md aus MDraft zuletzt
+geändert?` Die unter **Quellen** angezeigten Signaturen lassen sich im Memory
+Explorer anhand von `source_path`, `project` und `source_version` prüfen.
 
 Während der Anfrage ist **Fragen** deaktiviert und **HTTP-Abbruch** aktiviert.
 Langsamere lokale Reasoning-Modelle dürfen bis zu fünf Minuten ohne

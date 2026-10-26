@@ -68,6 +68,14 @@ Schreibtransaktionen zentral aus. Lesende Aufrufe bleiben DPAPI- und
 Mutex-geschützt; für nachfolgende Ausbaustufen werden sie ebenfalls über die
 Dienstschnittstelle vereinheitlicht.
 
+Der Collector identifiziert Quelldateien über einen kanonischen, unter Windows
+groß-/kleinschreibungsunabhängigen Pfadschlüssel. Änderungen aktualisieren den
+bestehenden Record; ein abbrechbarer Hintergrundabgleich entfernt gelöschte
+Quellen und historische Duplikate. Neben der unmittelbaren Collection werden
+der freigegebene Stammordner und das abgeleitete Projekt gespeichert. Die
+Chat-Retrievalstufe gewichtet diese Provenienzfelder vor Volltexttreffern und
+bildet bei langen Inhalten ein suchbegriffszentriertes Kontextfenster.
+
 ## Sicherheitsmodell
 
 Named-Pipe-DACL und SID-Prüfung erzwingen denselben angemeldeten Benutzer.

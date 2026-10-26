@@ -79,8 +79,11 @@ std::size_t record_lexical_score(const DynamicAssociativeDatabase::ExternalRecor
                                  std::string_view cue,const std::vector<std::string>& terms) {
     std::string haystack=lower(record.table);for(const auto&[key,value]:record.data)haystack+=' '+lower(key+' '+sql::display(value));
     std::size_t score{};auto normalized=lower(trim(cue));if(!normalized.empty()&&haystack.find(normalized)!=std::string::npos)score+=100000+normalized.size()*100;
-    for(const auto& term:terms)if(haystack.find(term)!=std::string::npos)score+=100+term.size();return score;
+    auto field=[&](std::string_view key){auto value=record.data.find(std::string(key));return value==record.data.end()?std::string{}:lower(sql::display(value->second));};
+    const auto title=field("title"),source=field("source_path"),project=field("project"),collection=field("collection"),content=field("content");
+    for(const auto& term:terms){bool matched{};if(title.find(term)!=std::string::npos){score+=3000+term.size()*20;matched=true;}if(source.find(term)!=std::string::npos){score+=2400+term.size()*16;matched=true;}if(project.find(term)!=std::string::npos){score+=2200+term.size()*14;matched=true;}if(collection.find(term)!=std::string::npos){score+=1800+term.size()*12;matched=true;}if(content.find(term)!=std::string::npos){score+=120+term.size();matched=true;}if(!matched&&haystack.find(term)!=std::string::npos)score+=60+term.size();}return score;
 }
+bool active_source(const DynamicAssociativeDatabase::ExternalRecord& record){auto value=record.data.find("source_active");return value==record.data.end()||sql::display(value->second)!="False";}
 }
 std::string DynamicAssociativeDatabase::store_sql_record(std::string_view table,const sql::Row& row,
     double stability,std::optional<std::array<double,3>> mood,std::optional<double> chaos) {
@@ -141,7 +144,7 @@ std::vector<DynamicAssociativeDatabase::ExternalRecord> DynamicAssociativeDataba
     std::string_view cue,double intensity,std::optional<std::size_t> limit) {
     std::vector<ExternalRecord> results;auto ranked=rank_patterns(cue);std::unordered_set<std::string> seen;
     struct Lexical{std::size_t score{};bool auxiliary{};ExternalRecord record;};std::vector<Lexical> lexical;auto terms=lexical_terms(cue);
-    for(auto& record:query_sql_like()){auto score=record_lexical_score(record,cue,terms);if(score)lexical.push_back({score,auxiliary_search_table(record.table),std::move(record)});}
+    for(auto& record:query_sql_like()){if(!active_source(record))continue;auto score=record_lexical_score(record,cue,terms);if(score)lexical.push_back({score,auxiliary_search_table(record.table),std::move(record)});}
     std::stable_sort(lexical.begin(),lexical.end(),[](const auto&a,const auto&b){if(a.auxiliary!=b.auxiliary)return !a.auxiliary;return a.score>b.score;});
     auto add=[&](ExternalRecord record){if((!limit||results.size()<*limit)&&seen.insert(record.signature).second)results.push_back(std::move(record));};
     if(!limit||*limit>0){for(auto& item:lexical)add(std::move(item.record));for(const auto& entry:ranked){if(limit&&results.size()>=*limit)break;if(auto result=get_sql_record(entry.signature))add(std::move(*result));}}

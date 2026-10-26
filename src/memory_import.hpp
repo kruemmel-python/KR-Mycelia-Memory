@@ -7,6 +7,8 @@
 
 namespace krmemory {
 struct ImportResult { std::string signature, collection; std::filesystem::path source; std::string format; std::size_t bytes{}; };
+bool import_format_supported(const std::filesystem::path&);
+std::string normalized_source_key(const std::filesystem::path&);
 // Imports only formats that can be parsed safely with the native runtime.
 // Binary office/media formats remain visible to callers as unsupported rather
 // than being misrepresented as extracted content.
