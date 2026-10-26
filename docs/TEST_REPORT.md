@@ -23,7 +23,7 @@ ctest --test-dir H:\KR-Mycelia-Memory\KR_BUILD\cmake_build `
 ```
 
 Ergebnis: **49 von 49 Tests bestanden, 0 Fehler**. Die abschließende Prüfung
-des regulären Installer-Builds benötigte 238,32 Sekunden und lief während der
+des Release-Builds 1.0.4 benötigte 293,64 Sekunden und lief während der
 aktive installierte Collector mehrere freigegebene Projektwurzeln abglich.
 Enthalten sind
 DAD-Kern, Observer, SQL/Attraktoren, Snapshots,
@@ -38,6 +38,12 @@ Szenenwechsel, Video-OCR, DAD-Mediensegmente mit
 Quellrelation und Snapshot-Restore, One-Click-Konfigurations-
 Merge/Rollback/Trennung, Windows-11-Theme/DPI-Helfer sowie aktive Windows-
 Prozessmitigierungen.
+
+Zusätzlich wurde die installierte Explorer-Kette gegen den realen DAD-Bestand
+geprüft: Eine 163.864 Byte große Listenantwort wurde vollständig über mehrere
+Pipe-Blöcke gelesen, als JSON validiert und anschließend ein vollständiger
+Einzeldatensatz über `memory.get` geladen. Der End-to-End-Test endete mit
+Exitcode 0.
 
 Der Datei-/Chat-Regressionsfall bildet außerdem den gemeldeten
 Sammelordnerfehler nach: Eine entfernte `KALYX\README.md` erwähnt `MDraft`,

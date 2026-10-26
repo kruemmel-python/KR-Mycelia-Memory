@@ -4,6 +4,26 @@ Alle wesentlichen Produktänderungen werden in diesem Dokument festgehalten.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/)
 und die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.0.4] – 2026-10-26
+
+### Behoben
+
+- Der Named-Pipe-Client liest große Dienstantworten vollständig über mehrere
+  Nachrichtenblöcke. Explorer-Ergebnisse oberhalb von 64 KiB werden nicht
+  mehr fälschlich als nicht erreichbarer Gedächtnisdienst gemeldet.
+- Explorer-Listen übertragen kompakte Datensatzübersichten. Der vollständige
+  Inhalt wird erst beim Auswählen eines Eintrags sicher nachgeladen. Dadurch
+  bleiben auch große DAD-Bestände reaktionsfähig, ohne Inhalte abzuschneiden.
+- Ein installierter End-to-End-Test prüft jetzt sowohl die vollständige
+  Explorer-Liste als auch das anschließende Laden eines Einzeldatensatzes.
+
+### Protokollhärtung
+
+- Antworten sind weiterhin strikt größenbegrenzt, dürfen aber kontrolliert bis
+  32 MiB umfassen. Anfragen bleiben unverändert auf 64 KiB begrenzt.
+- Der Client schaltet die lokale Pipe ausdrücklich in den Nachrichtenmodus und
+  behandelt `ERROR_MORE_DATA` als Fortsetzung statt als Verbindungsfehler.
+
 ## [1.0.3] – 2026-10-26
 
 ### Behoben
@@ -119,3 +139,4 @@ und die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 [1.0.1]: https://github.com/kruemmel-python/KR-Mycelia-Memory/releases/tag/v1.0.1
 [1.0.2]: https://github.com/kruemmel-python/KR-Mycelia-Memory/releases/tag/v1.0.2
 [1.0.3]: https://github.com/kruemmel-python/KR-Mycelia-Memory/releases/tag/v1.0.3
+[1.0.4]: https://github.com/kruemmel-python/KR-Mycelia-Memory/releases/tag/v1.0.4

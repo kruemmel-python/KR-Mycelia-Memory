@@ -64,6 +64,8 @@ Agentenrechte bleiben dabei ausdrücklich zustimmungspflichtig.
 - chronologische Aktivität und Suchhistorie;
 - interaktiver Direct2D-/DirectWrite-Beziehungsgraph;
 - Memory Explorer mit Suche, Quelle, Collection, Details und Relationen;
+- skalierbarer Explorer-Transport mit kompakten Ergebnislisten und
+  bedarfsgesteuertem Nachladen vollständiger Erinnerungen;
 - Collection-, Timeline- und Agentenverwaltung;
 - Datenschutzseite für Programm- und Ordnerfreigaben;
 - Tray-Betrieb und kontrollierter Benutzer-Autostart;

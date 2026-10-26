@@ -13,9 +13,10 @@
 
 namespace krmemory::service_rpc {
 inline constexpr wchar_t pipe_name[] = L"\\\\.\\pipe\\KRMyceliaMemoryService-v1";
+inline constexpr std::size_t maximum_response = 32u * 1024u * 1024u;
 inline std::string quote(std::string_view text) { std::string out{"\""}; for(unsigned char c:text){if(c=='\"'||c=='\\'){out+='\\';out+=char(c);}else if(c=='\n')out+="\\n";else if(c=='\r')out+="\\r";else if(c=='\t')out+="\\t";else if(c>=32)out+=char(c);}return out+'\"'; }
 inline bool response_ok(std::string_view response,std::string_view expected_id){
-    if(response.empty()||response.size()>65536)return false;
+    if(response.empty()||response.size()>maximum_response)return false;
     try{
         const auto root=json::parse(response);if(!root.is_object())return false;
         const auto* version=root.get("version"),*id=root.get("id"),*ok=root.get("ok");
@@ -35,7 +36,9 @@ inline std::optional<std::string> local_capability(){
 }
 inline bool transfer(std::string_view request,std::string_view id,std::string& response,DWORD timeout){
     if(request.size()>65536||!WaitNamedPipeW(pipe_name,timeout))return false;HANDLE pipe=CreateFileW(pipe_name,GENERIC_READ|GENERIC_WRITE,0,nullptr,OPEN_EXISTING,0,nullptr);if(pipe==INVALID_HANDLE_VALUE)return false;
-    DWORD written{},read{};response.assign(65536,'\0');bool done=WriteFile(pipe,request.data(),DWORD(request.size()),&written,nullptr)!=FALSE&&written==request.size()&&ReadFile(pipe,response.data(),DWORD(response.size()),&read,nullptr)!=FALSE;CloseHandle(pipe);if(!done){response.clear();return false;}response.resize(read);return response_ok(response,id);
+    DWORD mode=PIPE_READMODE_MESSAGE;if(!SetNamedPipeHandleState(pipe,&mode,nullptr,nullptr)){CloseHandle(pipe);return false;}DWORD written{};bool done=WriteFile(pipe,request.data(),DWORD(request.size()),&written,nullptr)!=FALSE&&written==request.size();response.clear();
+    while(done){char chunk[65536];DWORD read{};BOOL complete=ReadFile(pipe,chunk,DWORD(sizeof(chunk)),&read,nullptr);auto error=complete?ERROR_SUCCESS:GetLastError();if(read){if(response.size()+read>maximum_response){done=false;break;}response.append(chunk,read);}if(complete)break;if(error!=ERROR_MORE_DATA){done=false;break;}}
+    CloseHandle(pipe);if(!done){response.clear();return false;}return response_ok(response,id);
 }
 inline bool call(std::string_view id, std::string_view operation, std::string_view params, std::string& response, DWORD timeout=1000) {
     if(id.empty()||id.size()>128||operation.empty()||operation.size()>128||params.size()>58000)return false;auto secret=local_capability();if(!secret)return false;

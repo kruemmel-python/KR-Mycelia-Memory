@@ -23,6 +23,11 @@ Bei MCP-Agentenerinnerungen validiert der Dienst zusätzlich den Agenten-Token
 gegen seinen gespeicherten SHA-256-Hash, Scope und Ablaufzeit; eine Prüfung
 allein im stdio-Prozess genügt dafür nicht.
 
+RPC-Anfragen bleiben auf 64 KiB begrenzt. Antworten werden im Nachrichtenmodus
+vollständig über mehrere Pipe-Blöcke gelesen und besitzen eine harte Obergrenze
+von 32 MiB. Listenoperationen können kompakte Metadaten liefern; der Explorer
+lädt den vollständigen Datensatz erst nach der Auswahl über `memory.get`.
+
 `KR_Mycelia_MCP.exe` ist ein lokaler stdio-MCP-Server. Jeder Aufruf benötigt
 einen Agentennamen und einen hash-verifizierten Token mit passendem Scope. Der
 One-Click-Manager schreibt Tokens nicht in Clientkonfigurationen: er schützt

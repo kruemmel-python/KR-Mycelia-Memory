@@ -414,6 +414,13 @@ weiterhin **kein** Löschauftrag für bereits gespeicherte Erinnerungen.
 Der Explorer ist das zentrale Fenster für detaillierte Arbeit mit den
 gespeicherten Daten. Mehrere Explorer-Fenster können parallel geöffnet sein.
 
+Auch bei großen Gedächtnisbeständen überträgt die Ergebnisliste zunächst nur
+die für Auswahl und Zuordnung erforderlichen Metadaten. Sobald Sie einen
+Eintrag anklicken, lädt die Anwendung automatisch dessen vollständigen Inhalt
+und zeigt ihn rechts an. Währenddessen erscheint kurz
+**„Vollständige Erinnerung wird geladen …“**. Diese Arbeitsweise verhindert,
+dass umfangreiche Dateiinhalte die gesamte Trefferliste blockieren.
+
 ### 7.1 Such- und Filterzeile
 
 Die drei Felder werden gemeinsam ausgewertet:
